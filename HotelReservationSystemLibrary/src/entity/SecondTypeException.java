@@ -26,6 +26,9 @@ public class SecondTypeException implements Serializable {
      @Column(nullable = false)
     private String message;
 
+    public SecondTypeException() {
+    }
+
     public SecondTypeException(String message) {
         this.message = message;
     }       

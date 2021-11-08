@@ -26,6 +26,9 @@ public class FirstTypeException implements Serializable {
     @Column(nullable = false)
     private String message;
 
+    public FirstTypeException() {
+    }
+
     public FirstTypeException(String message) {
         this.message = message;
     }

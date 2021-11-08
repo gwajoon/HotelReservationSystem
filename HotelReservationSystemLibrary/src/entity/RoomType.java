@@ -39,7 +39,7 @@ public class RoomType implements Serializable {
     @Column(length = 32, nullable = false)
     private String amenities;
     @Column(nullable = false)
-    private Integer order;
+    private Integer priority;
     
     
     @OneToMany(mappedBy = "roomType")
@@ -165,15 +165,15 @@ public class RoomType implements Serializable {
     /**
      * @return the order
      */
-    public Integer getOrder() {
-        return order;
+    public Integer getPriority() {
+        return priority;
     }
 
     /**
-     * @param order the order to set
+     * @param priority the order to set
      */
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
     
 }

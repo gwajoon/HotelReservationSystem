@@ -28,6 +28,8 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
+    
+    
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -54,7 +56,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
         for (Reservation reservation : list) {
             RoomType roomType = reservation.getRoomType();
-            Integer rank = roomType.getOrder();
+            Integer rank = roomType.getPriority();
             List<Room> availableRooms = getAvailableRooms(roomType, date);
             Integer numOfRooms = reservation.getNumberOfRooms();
 
@@ -76,7 +78,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
             if (numOfRooms > 0) {
 //                generateSecondTypeException
-            } else if (rank != roomType.getOrder()) {
+            } else if (rank != roomType.getPriority()) {
 //                generateFirstTypeException
             }
 

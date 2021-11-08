@@ -1,0 +1,10 @@
+/build/
+/dist/
+/HotelReservationSystem-ejb/build/
+/HotelReservationSystem-ejb/dist/
+/HoRSManagementClient/build/
+/HoRSManagementClient/dist/
+/HotelReservationSystemLibrary/dist/
+/HotelReservationSystemLibrary/build/
+/HoRSReservationClient/dist/
+/HoRSReservationClient/build/
