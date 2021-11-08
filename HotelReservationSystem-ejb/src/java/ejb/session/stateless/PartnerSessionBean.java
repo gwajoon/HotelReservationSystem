@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Partner;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -13,9 +14,9 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import util.exception.PartnerNotFoundException;
-import util.exception.PartnerEmailExistException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.PartnerEmailExistException;
+import util.exception.PartnerNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -23,18 +24,12 @@ import util.exception.UnknownPersistenceException;
  * @author GuoJun
  */
 @Stateless
-public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSessionBeanLocal 
-{
-
-    @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
-    private EntityManager em;
-
-    
+public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSessionBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    
-    
+    @PersistenceContext
+    private EntityManager em;
 
     public PartnerSessionBean() {
     }
@@ -105,5 +100,9 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         }
     }
 
-    
+    @Override
+    public List<Partner> retrieveAllPartners() {
+        Query query = em.createQuery("SELECT p FROM Partner p");
+        return query.getResultList();
+    }
 }

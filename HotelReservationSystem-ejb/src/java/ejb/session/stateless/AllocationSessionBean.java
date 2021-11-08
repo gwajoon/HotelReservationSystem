@@ -33,7 +33,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    @Schedule(dayOfWeek = "*", hour = "2", info = "allocationTimer")
+    //@Schedule(dayOfWeek = "*", hour = "2", info = "allocationTimer")
     public void allocationTimer() {
 //        LocalDateTime date = LocalDateTime.now();
 //        date.plusHours(10);

@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Employee;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -103,6 +104,12 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
                 throw new UnknownPersistenceException(ex.getMessage());
             }
         }
+    }
+
+    @Override
+    public List<Employee> retrieveAllEmployees() {
+        Query query = em.createQuery("SELECT e FROM Employee e");
+        return query.getResultList();
     }
 
     

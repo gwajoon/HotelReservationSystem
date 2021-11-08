@@ -21,9 +21,6 @@ import ejb.session.stateless.RoomTypeSessionBeanRemote;
 public class Main {
 
     @EJB
-    private static RoomSessionBeanRemote roomSessionBean;
-
-    @EJB
     private static EmployeeSessionBeanRemote employeeSessionBeanRemote;
     @EJB
     private static RegisteredGuestSessionBeanRemote registeredGuestSessionBeanRemote;

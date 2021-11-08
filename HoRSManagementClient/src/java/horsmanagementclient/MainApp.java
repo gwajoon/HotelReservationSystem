@@ -73,7 +73,6 @@ public class MainApp {
             while (response < 1 || response > 2) {
                 System.out.print("> ");
                 response = scanner.nextInt();
-
                 if (response == 1) {
                     try {
                         doLogin();
@@ -102,13 +101,11 @@ public class MainApp {
 
     public void doLogin() throws InvalidLoginCredentialException {
         Scanner scanner = new Scanner(System.in);
-        String email = "";
-        String password = "";
 
         System.out.print("Enter email> ");
-        email = scanner.nextLine();
+        String email = scanner.nextLine();
         System.out.print("Enter password> ");
-        password = scanner.nextLine();
+        String password = scanner.nextLine();
 
         if (email.length() > 0 && password.length() > 0) {
             currentEmployee = employeeSessionBeanRemote.employeeLogin(email, password);

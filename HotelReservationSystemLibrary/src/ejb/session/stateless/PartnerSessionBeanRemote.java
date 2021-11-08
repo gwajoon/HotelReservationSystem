@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Partner;
+import java.util.List;
 import javax.ejb.Remote;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerEmailExistException;
@@ -21,4 +22,5 @@ public interface PartnerSessionBeanRemote {
     public Partner partnerLogin(String email, String password) throws InvalidLoginCredentialException;
     public Partner retrievePartnerByEmail(String email) throws PartnerNotFoundException;
     public Long createNewPartner(Partner newPartner) throws PartnerEmailExistException, UnknownPersistenceException;
+    public List<Partner> retrieveAllPartners();
 }

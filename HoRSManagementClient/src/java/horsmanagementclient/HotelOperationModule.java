@@ -150,7 +150,10 @@ public class HotelOperationModule {
         System.out.print("Enter amenities > ");
         String amenities = scanner.nextLine().trim();
         
-        RoomType newRoomType = new RoomType(name, description, size, bed, capacity, amenities);
+        System.out.print("Enter priority > ");
+        int priority = scanner.nextInt();
+        
+        RoomType newRoomType = new RoomType(name, description, size, bed, capacity, amenities, priority);
         System.out.println(newRoomType.getName() + newRoomType.getDescription() + newRoomType.getSize() + newRoomType.getBed() + newRoomType.getCapacity() + newRoomType.getAmenities());
         
         try {

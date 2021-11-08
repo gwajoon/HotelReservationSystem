@@ -53,7 +53,7 @@ public class RoomType implements Serializable {
         this.rooms = new ArrayList<Room>();
     }
 
-    public RoomType(String name, String description, String size, String bed, String capacity, String amenities) {
+    public RoomType(String name, String description, String size, String bed, String capacity, String amenities, Integer priority) {
         this();
         this.name = name;
         this.description = description;
@@ -61,6 +61,7 @@ public class RoomType implements Serializable {
         this.bed = bed;
         this.capacity = capacity;
         this.amenities = amenities;
+        this.priority = priority;
     }
 
     public Long getId() {

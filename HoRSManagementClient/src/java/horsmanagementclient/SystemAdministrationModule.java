@@ -6,10 +6,14 @@
 package horsmanagementclient;
 
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
 import entity.Employee;
+import entity.Partner;
+import java.util.List;
 import java.util.Scanner;
 import util.enumeration.EmployeeType;
 import util.exception.EmployeeEmailExistException;
+import util.exception.PartnerEmailExistException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -18,6 +22,7 @@ import util.exception.UnknownPersistenceException;
  */
 public class SystemAdministrationModule {
     private EmployeeSessionBeanRemote employeeSessionBeanRemote;
+    private PartnerSessionBeanRemote partnerSessionBeanRemote;
     private Employee currentEmployee;
 
     public SystemAdministrationModule() {
@@ -57,12 +62,15 @@ public class SystemAdministrationModule {
                 }
                 else if(response == 2)
                 {
+                    viewAllEmployees();
                 }
                 else if(response == 3)
                 {
+                    doCreateNewPartner();
                 }
                 else if(response == 4)
                 {
+                    viewAllPartners();
                 }
                 else if(response == 5)
                 {
@@ -87,21 +95,17 @@ public class SystemAdministrationModule {
         
         System.out.print("Enter first name > ");
         String firstName = scanner.nextLine().trim();
-        System.out.println(firstName);
         
         System.out.print("Enter last name > ");
         String lastName = scanner.nextLine().trim();
-                System.out.println(lastName);
 
         
         System.out.print("Enter email  > ");
         String email = scanner.nextLine().trim();
-                System.out.println(email);
 
         
         System.out.print("Enter password > ");
         String password = scanner.nextLine().trim();
-                System.out.println(password);
 
         
         int employeeType = 0;
@@ -137,6 +141,65 @@ public class SystemAdministrationModule {
         catch (UnknownPersistenceException ex)
         {
             System.out.println("An unknown error has occurred while creating the new employee!: " + ex.getMessage() + "\n");
+        }
+    }
+    
+    public void viewAllEmployees()
+    {
+        List<Employee> employees = employeeSessionBeanRemote.retrieveAllEmployees();
+        
+        
+        for (Employee e : employees)
+        {
+            System.out.printf("Employee id: %s, first name: %s, last name: %s, email: %s, employee type: %s ", e.getId(), e.getFirstName(), e.getLastName(), e.getEmail(), e.getEmployeeType());
+        }
+    }
+    
+    public void doCreateNewPartner()
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** Hotel Reservation System :: System Administration :: Create New Partner ***\n");
+        
+        System.out.print("Enter first name > ");
+        String firstName = scanner.nextLine().trim();
+        
+        System.out.print("Enter last name > ");
+        String lastName = scanner.nextLine().trim();
+
+        
+        System.out.print("Enter email  > ");
+        String email = scanner.nextLine().trim();
+
+        
+        System.out.print("Enter password > ");
+        String password = scanner.nextLine().trim();
+
+        Partner newPartner = new Partner(firstName, lastName, email, password);
+        System.out.println(newPartner);
+        
+        try
+        {
+            Long newPartnerId = partnerSessionBeanRemote.createNewPartner(newPartner);
+            System.out.println("New partner created successfully!: " + newPartnerId + "\n");
+        }
+        catch (PartnerEmailExistException ex)
+        {
+            System.out.println("An error has occurred while creating the new partner!: The user name already exist\n");
+        }
+        catch (UnknownPersistenceException ex)
+        {
+            System.out.println("An unknown error has occurred while creating the new partner!: " + ex.getMessage() + "\n");
+        }
+    }
+
+    public void viewAllPartners()
+    {
+        List<Partner> partners = partnerSessionBeanRemote.retrieveAllPartners();
+        
+        
+        for (Partner p : partners)
+        {
+            System.out.printf("Partner id: %s, first name: %s, last name: %s, email: %s", p.getPartnerId(), p.getFirstName(), p.getLastName());
         }
     }
 }

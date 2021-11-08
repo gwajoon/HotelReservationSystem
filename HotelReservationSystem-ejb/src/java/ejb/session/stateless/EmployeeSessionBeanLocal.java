@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Employee;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.EmployeeNotFoundException;
 import util.exception.EmployeeEmailExistException;
@@ -24,5 +25,7 @@ public interface EmployeeSessionBeanLocal {
     Employee retrieveEmployeeByEmail(String email) throws EmployeeNotFoundException;
 
     Long createNewEmployee(Employee newEmployee) throws EmployeeEmailExistException, UnknownPersistenceException;
+
+    List<Employee> retrieveAllEmployees();
     
 }
