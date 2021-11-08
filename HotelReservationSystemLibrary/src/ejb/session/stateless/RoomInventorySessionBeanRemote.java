@@ -17,6 +17,6 @@ import javax.ejb.Remote;
 @Remote
 public interface RoomInventorySessionBeanRemote {
 
-    public List<RoomType> getAvailableRoomTypes(Date checkInDate, Date checkOutDate);
+    public List<RoomType> getAvailableRoomTypes(Date checkInDate, Date checkOutDate, Integer numOfRooms);
 
 }

@@ -16,5 +16,6 @@ import javax.ejb.Local;
  */
 @Local
 public interface RoomInventorySessionBeanLocal {
-    public List<RoomType> getAvailableRoomTypes(Date checkInDate, Date checkOutDate);
+    
+    public List<RoomType> getAvailableRoomTypes(Date checkInDate, Date checkOutDate, Integer numOfRooms);
 }
