@@ -58,7 +58,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     @Override
     public Partner retrievePartnerByEmail(String email) throws PartnerNotFoundException 
     {
-        Query query = em.createQuery("SELECT  FROM Partner p WHERE p.email = :inEmail");
+        Query query = em.createQuery("SELECT p FROM Partner p WHERE p.email = :inEmail");
         query.setParameter("inEmail", email);
         
         try {

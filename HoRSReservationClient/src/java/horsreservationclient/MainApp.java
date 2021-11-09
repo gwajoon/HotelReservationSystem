@@ -56,10 +56,10 @@ public class MainApp {
 
                 response = scanner.nextInt();
 
-                if (response == 1) {
-                    doCreateNewRegisteredGuest();
-                } else if (response == 2) {
+                if (response == 1) {      
                     doGuestLogin();
+                } else if (response == 2) {
+                    doCreateNewRegisteredGuest();
                 } else if (response == 3) {
                     doSearchHotelRoom();
                 } else if (response == 4) {

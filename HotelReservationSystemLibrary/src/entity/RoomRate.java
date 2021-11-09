@@ -9,13 +9,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import util.enumeration.RateType;
 /**
  *
  * @author GuoJun
@@ -37,9 +34,6 @@ public class RoomRate implements Serializable {
     private String endDate;
     @Column(nullable = false)
     private Boolean enabled;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RateType rateType;
     
     @ManyToOne(optional = false)
     private RoomType roomType;
@@ -47,13 +41,14 @@ public class RoomRate implements Serializable {
     public RoomRate() {
     }
 
-    public RoomRate(String name, BigDecimal ratePerNight, String startDate, String endDate) {
+    public RoomRate(String name, BigDecimal ratePerNight, String startDate, String endDate, boolean enabled) {
         this();
         
         this.name = name;
         this.ratePerNight = ratePerNight;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.enabled = enabled;
     }
 
     public Long getId() {

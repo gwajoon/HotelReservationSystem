@@ -31,7 +31,7 @@ public class RegisteredGuest extends Guest implements Serializable {
         super();
     }
 
-    public RegisteredGuest(String email, String password, String firstName, String lastName) {
+    public RegisteredGuest(String firstName, String lastName, String email, String password) {
         super(firstName, lastName);
         this.email = email;
         this.password = password;

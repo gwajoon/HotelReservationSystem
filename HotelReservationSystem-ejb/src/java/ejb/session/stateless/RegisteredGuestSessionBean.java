@@ -81,7 +81,7 @@ public class RegisteredGuestSessionBean implements RegisteredGuestSessionBeanRem
     @Override
     public RegisteredGuest retrieveRegisteredGuestByEmail(String registeredGuestEmail) throws RegisteredGuestNotFoundException {
         Query query = em.createQuery("SELECT rg FROM RegisteredGuest rg WHERE rg.email = :inEmail");
-        query.setParameter(registeredGuestEmail, "inEmail");
+        query.setParameter("inEmail", registeredGuestEmail);
         
         try {
             return (RegisteredGuest) query.getSingleResult();
