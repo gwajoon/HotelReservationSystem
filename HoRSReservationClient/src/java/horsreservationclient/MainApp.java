@@ -3,21 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hotelreservationsystemreservationclient;
+package horsreservationclient;
 
 import ejb.session.stateless.RegisteredGuestSessionBeanRemote;
+import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomInventorySessionBeanRemote;
 import entity.RegisteredGuest;
+import entity.Reservation;
 import entity.RoomType;
 import java.util.Scanner;
 import util.exception.InvalidLoginCredentialException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.exception.RegisteredGuestEmailExistException;
+import util.exception.RegisteredGuestNotFoundException;
+import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -29,13 +34,15 @@ public class MainApp {
     private RegisteredGuestSessionBeanRemote registeredGuestSessionBeanRemote;
     private RoomInventorySessionBeanRemote roomInventorySessionBeanRemote;
     private RegisteredGuest currentGuest;
+    private ReservationSessionBeanRemote reservationSessionBeanRemote;
 
     public MainApp() {
     }
 
-    public MainApp(RegisteredGuestSessionBeanRemote registeredGuestSessionBeanRemote, RoomInventorySessionBeanRemote roomInventorySessionBeanRemote) {
+    public MainApp(RegisteredGuestSessionBeanRemote registeredGuestSessionBeanRemote, RoomInventorySessionBeanRemote roomInventorySessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote) {
         this.registeredGuestSessionBeanRemote = registeredGuestSessionBeanRemote;
         this.roomInventorySessionBeanRemote = roomInventorySessionBeanRemote;
+        this.reservationSessionBeanRemote = reservationSessionBeanRemote;
     }
 
     public void runApp() {
@@ -143,7 +150,9 @@ public class MainApp {
                 if (response == 1) {
                     doSearchHotelRoom();
                 } else if (response == 2) {
+                    doViewMyReservation();
                 } else if (response == 3) {
+                    doViewAllMyReservations();
                 } else if (response == 4) {
                     break;
                 } else {
@@ -165,43 +174,87 @@ public class MainApp {
         System.out.print("Enter number of rooms > ");
         int numOfRooms = scanner.nextInt();
 
-        for (int i = 0; i < numOfRooms; i++) {
-            Date checkInDate = new Date();
-            Date checkOutDate = new Date();
-            try {
-                System.out.print("Enter check-in date (dd/mm/yyyy) > ");
-                checkInDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
-                System.out.print("Enter check-out date > ");
-                checkOutDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
-            } catch (ParseException ex) {
-                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            List<RoomType> availableRoomTypes = roomInventorySessionBeanRemote.getAvailableRoomTypes(checkInDate, checkOutDate);
-            
-            if (availableRoomTypes.size() > 0) {
-                System.out.printf("Rooms available from %t to %t for room types: %s", checkInDate, checkOutDate);
-                
-                for (RoomType r : availableRoomTypes) {
-                    System.out.print(r.getName() + ", \n");
-                }
+        Date checkInDate = new Date();
+        Date checkOutDate = new Date();
+        try {
+            System.out.print("Enter check-in date (dd/mm/yyyy) > ");
+            checkInDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
+
+            System.out.print("Enter check-out date > ");
+            checkOutDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
+
+        } catch (ParseException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        LocalDateTime newCheckInDate = new java.sql.Timestamp(
+                checkInDate.getTime()).toLocalDateTime();
+        newCheckInDate.plusHours(14);
+
+        LocalDateTime newCheckOutDate = new java.sql.Timestamp(
+                checkInDate.getTime()).toLocalDateTime();
+        newCheckOutDate.plusHours(12);
+
+        List<RoomType> availableRoomTypes = roomInventorySessionBeanRemote.getAvailableRoomTypes(checkInDate, checkOutDate, numOfRooms);
+
+        if (availableRoomTypes.size() > 0) {
+            System.out.printf("Rooms available from %t to %t for room types: %s", checkInDate, checkOutDate);
+
+            for (int i = 0; i < availableRoomTypes.size(); i++) {
+                RoomType roomType = availableRoomTypes.get(i);
+                System.out.println(i + roomType.getName() + reservationSessionBeanRemote.calculatePrice(newCheckInDate, newCheckOutDate, roomType, "Online") + ", \n");
             }
         }
-        
+
+        System.out.println("Select room type to reserve >");
+        int selection = scanner.nextInt();
+
         if (currentGuest.getId() != null) {
-            doReserveHotelRoom();
+            doReserveHotelRoom(availableRoomTypes.get(selection), newCheckInDate, newCheckOutDate, numOfRooms, currentGuest.getId());
         }
     }
-    
-    public void doReserveHotelRoom() {
+
+    public void doReserveHotelRoom(RoomType roomType, LocalDateTime checkInDate, LocalDateTime checkOutDate, Integer numOfRooms, Long guestId) {
         System.out.println("*** Hotel Reservation System :: Reservation :: Registered Guest :: Reserve Room ***\n");
+
+        Reservation reservation = new Reservation();
+        reservation.setCheckInDate(checkInDate);
+        reservation.setCheckOutDate(checkInDate);
+        reservation.setNumberOfRooms(numOfRooms);
+        reservation.setReservationType("Online");
+
+        try {
+            Long reservationId = reservationSessionBeanRemote.createNewOnlineReservation(reservation, roomType.getId(), guestId);
+        } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void doViewMyReservation() {
+
         Scanner scanner = new Scanner(System.in);
 
-        int response = 0;
+        System.out.println("Enter Reservation Id>");
+        Long reservationId = scanner.nextLong();
 
-        System.out.print("Choose room based on number > ");
-        int roomId = scanner.nextInt();
+        try {
+            Reservation reservation = reservationSessionBeanRemote.viewReservation(reservationId);
+        } catch (ReservationNotFoundException ex) {
+            System.out.println("Reservation " + reservationId + " not found");
+        }
+        
+        System.out.println("Reservation ");
+
     }
     
-    
+    public void doViewAllMyReservations(){
+        
+        
+        try{
+            reservationSessionBeanRemote.viewAllReservations(this.currentGuest.getId());
+        } catch (RegisteredGuestNotFoundException ex){
+            System.out.println("Registered Guest " + this.currentGuest.getId() + " not found");
+        }
+    }
+
 }
