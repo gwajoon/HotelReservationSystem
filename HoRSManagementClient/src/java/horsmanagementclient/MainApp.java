@@ -6,6 +6,7 @@
 package horsmanagementclient;
 
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RegisteredGuestSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomInventorySessionBeanRemote;
@@ -39,6 +40,7 @@ public class MainApp {
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     private RoomSessionBeanRemote roomSessionBeanRemote;
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
+    private PartnerSessionBeanRemote partnerSessionBeanRemote;
 
     public MainApp() {
     }
@@ -46,7 +48,7 @@ public class MainApp {
     public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote,
             RegisteredGuestSessionBeanRemote registeredGuestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote,
             RoomInventorySessionBeanRemote roomInventorySessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote,
-            RoomSessionBeanRemote roomSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote) {
+            RoomSessionBeanRemote roomSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote) {
 
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.registeredGuestSessionBeanRemote = registeredGuestSessionBeanRemote;
@@ -55,6 +57,7 @@ public class MainApp {
         this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
+        this.partnerSessionBeanRemote = partnerSessionBeanRemote;
 
     }
 
@@ -79,7 +82,7 @@ public class MainApp {
                         System.out.println("Login successful!");
 
                         hotelOperationModule = new HotelOperationModule(roomTypeSessionBeanRemote, roomRateSessionBeanRemote, currentEmployee, roomSessionBeanRemote);
-                        systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote);
+                        systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, partnerSessionBeanRemote);
                         frontOfficeModule = new FrontOfficeModule();
                         mainMenu();
                     } catch (InvalidLoginCredentialException ex) {

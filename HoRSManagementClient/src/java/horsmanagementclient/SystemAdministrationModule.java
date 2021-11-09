@@ -28,8 +28,9 @@ public class SystemAdministrationModule {
     public SystemAdministrationModule() {
     }
 
-    public SystemAdministrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote) {
+    public SystemAdministrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote) {
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
+        this.partnerSessionBeanRemote = partnerSessionBeanRemote;
     }
     
     
@@ -151,7 +152,7 @@ public class SystemAdministrationModule {
         
         for (Employee e : employees)
         {
-            System.out.printf("Employee id: %s, first name: %s, last name: %s, email: %s, employee type: %s ", e.getId(), e.getFirstName(), e.getLastName(), e.getUsername(), e.getEmployeeType());
+            System.out.printf("Employee id: %s, first name: %s, last name: %s, email: %s, employee type: %s\n", e.getId(), e.getFirstName(), e.getLastName(), e.getUsername(), e.getEmployeeType());
         }
     }
     
@@ -199,7 +200,7 @@ public class SystemAdministrationModule {
         
         for (Partner p : partners)
         {
-            System.out.printf("Partner id: %s, first name: %s, last name: %s, email: %s", p.getPartnerId(), p.getFirstName(), p.getLastName());
+            System.out.printf("Partner id: %s, first name: %s, last name: %s, email: %s\n", p.getPartnerId(), p.getFirstName(), p.getLastName(), p.getEmail());
         }
     }
 }

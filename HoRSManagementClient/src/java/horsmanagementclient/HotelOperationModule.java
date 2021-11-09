@@ -171,9 +171,7 @@ public class HotelOperationModule {
         List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
 
         for (RoomType rt : roomTypes) {
-            int listing = 1;
-            System.out.println(listing + ". " + rt.getName());
-            listing++;
+            System.out.println("Room Id: " + rt.getId() + ". " + rt.getName());
         }
 
         System.out.print(">");
@@ -183,6 +181,7 @@ public class HotelOperationModule {
             RoomType roomType = roomTypeSessionBeanRemote.retrieveRoomTypeByRoomTypeId(roomTypeId);
 
             System.out.println("** " + "Room type ID: " + roomType.getId() + ", Room type name: " + roomType.getName() + " **\n");
+            System.out.printf("Size: %s, Bed: %s, Capacity: %s, Amenities: %s, Priority: %s", roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities(), roomType.getPriority());
             System.out.println("------------------------");
             System.out.println("1: Update Room Type");
             System.out.println("2: Delete Room Type");
@@ -273,11 +272,10 @@ public class HotelOperationModule {
 
         System.out.println("Select Room Type");
         List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
-        int listing = 1;
         for (RoomType rt : roomTypes) {
 
-            System.out.println(listing + ". " + rt.getName());
-            listing++;
+            System.out.println("Room Type Id: " + rt.getId() + ". " + rt.getName());
+            
         }
 
         System.out.print(">");
@@ -305,10 +303,12 @@ public class HotelOperationModule {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View All Room ***\n");
 
-        // List<Room> rooms = roomSessionBean.viewAllRooms();
-//        for (RoomRate r : rooms) {
-//            System.out.println("** " + "Room ID: " + r.getId() + ", Room number: " + r.getRoomNum() + "Room Status: " + r.getRoomStatus() + "Room Type: " + r.getRoomType().getName() + "\n");
-//        }
+        List<Room> rooms = roomSessionBeanRemote.viewAllRooms();
+        
+        for (Room r : rooms) {
+            System.out.println("** " + "Room ID: " + r.getId() + ", Room number: " + r.getRoomNumber() + "Room Status: " + r.getRoomStatus() + "Room Type: " + r.getRoomType().getName() + "\n");
+        }
+        
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
@@ -351,12 +351,16 @@ public class HotelOperationModule {
         }
 
         System.out.println(newRoomRate.getName() + newRoomRate.getRatePerNight() + newRoomRate.getStartDate() + newRoomRate.getEndDate());
-
-        System.out.print("Enter room type > ");
-        String roomTypeName = scanner.nextLine();
-
-        Long roomTypeId = roomTypeSessionBeanRemote.retrieveRoomTypeByName(roomTypeName).getId();
-
+        
+        System.out.println("Select Room Type");
+        List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
+        for (RoomType rt : roomTypes) {
+            System.out.println("Room type id: " + rt.getId() + ". " + rt.getName());
+        }
+        
+        System.out.print(">");
+        Long roomTypeId = scanner.nextLong();
+        
         try {
             Long newRoomRateId = roomRateSessionBeanRemote.createNewRoomRate(newRoomRate, roomTypeId);
             System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
@@ -386,6 +390,7 @@ public class HotelOperationModule {
             RoomRate roomRate = roomRateSessionBeanRemote.retrieveRoomRateByRoomRateId(roomRateId);
 
             System.out.println("** " + "Room rate ID: " + roomRate.getId() + ", Room rate name: " + roomRate.getName() + " **\n");
+            System.out.printf("Rate per night: %d, start date: %s, end date: %s", roomRate.getRatePerNight(), roomRate.getStartDate(), roomRate.getEndDate());
             System.out.println("------------------------");
             System.out.println("1: Update Room Rate");
             System.out.println("2: Delete Room Rate");

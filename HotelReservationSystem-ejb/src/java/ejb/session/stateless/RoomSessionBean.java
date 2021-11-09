@@ -36,6 +36,8 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
             room.setRoomType(roomType);
             em.persist(room);
             roomType.getRooms().add(room);
+            em.persist(roomType);
+
             em.flush();
             return room.getId();
 
