@@ -33,6 +33,10 @@ public class Guest implements Serializable {
     private String firstName;
     @Column(length = 32, nullable = false)
     private String lastName;
+    @Column(length = 32, nullable = false)
+    private String email;
+    @Column(length = 32, nullable = false)
+    private String password;
 
     @OneToMany
     private List<Reservation> reservations;
@@ -103,6 +107,34 @@ public class Guest implements Serializable {
     @Override
     public String toString() {
         return "entity.Guest[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

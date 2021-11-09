@@ -6,10 +6,13 @@
 package ejb.session.stateless;
 
 import entity.Reservation;
+import entity.RoomType;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.RegisteredGuestNotFoundException;
+import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -21,10 +24,14 @@ public interface ReservationSessionBeanRemote {
 
     public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId) throws UnknownPersistenceException;
 
-    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId) throws UnknownPersistenceException;
+   
 
     public List<Reservation> viewAllReservations(Long registeredGuestId) throws RegisteredGuestNotFoundException;
 
-    public BigDecimal calculatePrice(Long reservationId);
+    public BigDecimal calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType);
+
+    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
+
+    public Reservation viewReservation(Long reservationId) throws ReservationNotFoundException;
     
 }
