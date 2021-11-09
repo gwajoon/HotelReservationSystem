@@ -173,7 +173,7 @@ public class MainApp {
 
         System.out.print("Enter number of rooms > ");
         int numOfRooms = scanner.nextInt();
-
+        scanner.nextLine();
         Date checkInDate = new Date();
         Date checkOutDate = new Date();
         try {
@@ -202,7 +202,7 @@ public class MainApp {
 
             for (int i = 0; i < availableRoomTypes.size(); i++) {
                 RoomType roomType = availableRoomTypes.get(i);
-                System.out.println(i + roomType.getName() + reservationSessionBeanRemote.calculatePrice(newCheckInDate, newCheckOutDate, roomType, "Online") + ", \n");
+                System.out.println(""+ i + roomType.getName() + reservationSessionBeanRemote.calculatePrice(newCheckInDate, newCheckOutDate, roomType, "Online") + ", \n");
             }
         }
 
@@ -210,11 +210,11 @@ public class MainApp {
         int selection = scanner.nextInt();
 
         if (currentGuest.getId() != null) {
-            doReserveHotelRoom(availableRoomTypes.get(selection), newCheckInDate, newCheckOutDate, numOfRooms, currentGuest.getId());
+            doReserveHotelRoom(availableRoomTypes.get(selection), checkInDate, checkOutDate, numOfRooms, currentGuest.getId());
         }
     }
 
-    public void doReserveHotelRoom(RoomType roomType, LocalDateTime checkInDate, LocalDateTime checkOutDate, Integer numOfRooms, Long guestId) {
+    public void doReserveHotelRoom(RoomType roomType, Date checkInDate, Date checkOutDate, Integer numOfRooms, Long guestId) {
         System.out.println("*** Hotel Reservation System :: Reservation :: Registered Guest :: Reserve Room ***\n");
 
         Reservation reservation = new Reservation();

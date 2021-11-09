@@ -101,7 +101,11 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
         List<Room> availableRooms = new ArrayList<Room>();
 
         for (Room room : rooms) {
-            if (room.getReservations().get(room.getReservations().size() - 1).getCheckOutDate().isBefore(date)) {
+            
+            LocalDateTime checkOutDate = new java.sql.Timestamp(
+                room.getReservations().get(room.getReservations().size() - 1).getCheckOutDate().getTime()).toLocalDateTime();
+            
+            if (checkOutDate.isBefore(date)) {
                 availableRooms.add(room);
             }
         }

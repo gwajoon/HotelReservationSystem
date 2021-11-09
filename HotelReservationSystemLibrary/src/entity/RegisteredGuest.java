@@ -20,13 +20,13 @@ import javax.persistence.OneToMany;
  * @author seanang
  */
 @Entity
-public class RegisteredGuest extends Guest implements Serializable {
+public class RegisteredGuest implements Serializable {
 
     private static final long serialVersionUID = 1L;
   
      @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    private Long id;
     @Column(length = 32, nullable = false)
     private String firstName;
     @Column(length = 32, nullable = false)
@@ -44,7 +44,7 @@ public class RegisteredGuest extends Guest implements Serializable {
     }
 
 
-    public RegisteredGuest(String email, String password, String firstName, String lastName) {
+    public RegisteredGuest(String firstName, String lastName, String email, String password) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -54,7 +54,7 @@ public class RegisteredGuest extends Guest implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (getId() != null ? getId().hashCode() : 0);
         return hash;
     }
 
@@ -65,7 +65,7 @@ public class RegisteredGuest extends Guest implements Serializable {
             return false;
         }
         RegisteredGuest other = (RegisteredGuest) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -73,7 +73,7 @@ public class RegisteredGuest extends Guest implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.RegisteredGuest[ id=" + id + " ]";
+        return "entity.RegisteredGuest[ id=" + getId() + " ]";
     }
 
     /**
@@ -144,6 +144,20 @@ public class RegisteredGuest extends Guest implements Serializable {
      */
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
     }
     
 }

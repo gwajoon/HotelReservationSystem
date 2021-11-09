@@ -6,7 +6,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -32,9 +32,11 @@ public class Reservation implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private LocalDateTime checkInDate;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date checkInDate;
     @Column(nullable = false)
-    private LocalDateTime checkOutDate;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date checkOutDate;
     @Column(nullable = false)
     private int numberOfRooms;
     @Column(nullable = false)
@@ -58,7 +60,7 @@ public class Reservation implements Serializable {
 
     }
 
-    public Reservation(LocalDateTime checkInDate, LocalDateTime checkOutDate, Guest guest, String reservationType) {
+    public Reservation(Date checkInDate, Date checkOutDate, Guest guest, String reservationType) {
         this();
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
@@ -74,19 +76,19 @@ public class Reservation implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getCheckInDate() {
+    public Date getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(LocalDateTime checkInDate) {
+    public void setCheckInDate(Date checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public LocalDateTime getCheckOutDate() {
+    public Date getCheckOutDate() {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(LocalDateTime checkOutDate) {
+    public void setCheckOutDate(Date checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 
