@@ -43,7 +43,7 @@ public class RoomInventorySessionBean implements RoomInventorySessionBeanRemote,
             
             Query reservationQuery = em.createQuery("SELECT r FROM Reservation r WHERE r.roomType = ?1"
                     + " AND ( (r.checkInDate >= ?2 AND r.checkInDate < ?3)"
-                    + "OR (r.checkOutDate > ?4 AND r.checkOutDate <= 5))");
+                    + "OR (r.checkOutDate > ?4 AND r.checkOutDate <= ?5))");
             
             reservationQuery.setParameter(1, roomType);
             reservationQuery.setParameter(2, checkInDate);

@@ -198,9 +198,9 @@ public class MainApp {
         List<RoomType> availableRoomTypes = roomInventorySessionBeanRemote.getAvailableRoomTypes(checkInDate, checkOutDate, numOfRooms);
 
         if (availableRoomTypes.size() > 0) {
-            System.out.printf("Rooms available from %t to %t for room types: %s", checkInDate, checkOutDate);
+            System.out.printf("Rooms available from %s to %s for room types: ", checkInDate, checkOutDate);
 
-            for (int i = 0; i < availableRoomTypes.size(); i++) {
+            for (int i = 1; i <= availableRoomTypes.size(); i++) {
                 RoomType roomType = availableRoomTypes.get(i);
                 System.out.println(""+ i + roomType.getName() + reservationSessionBeanRemote.calculatePrice(newCheckInDate, newCheckOutDate, roomType, "Online") + ", \n");
             }
