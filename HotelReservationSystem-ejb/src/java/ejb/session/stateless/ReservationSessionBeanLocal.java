@@ -5,7 +5,12 @@
  */
 package ejb.session.stateless;
 
+import entity.Reservation;
+import entity.RoomType;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import javax.ejb.Local;
+import util.exception.UnknownPersistenceException;
 
 /**
  *
@@ -13,5 +18,6 @@ import javax.ejb.Local;
  */
 @Local
 public interface ReservationSessionBeanLocal {
-    
+    public BigDecimal calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType);
+     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
 }

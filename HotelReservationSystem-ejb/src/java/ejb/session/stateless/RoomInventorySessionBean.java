@@ -5,7 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.Room;
 import entity.RoomType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -24,19 +26,37 @@ public class RoomInventorySessionBean implements RoomInventorySessionBeanRemote,
     private EntityManager em;
 
     // do a check on roomtype
-    public List<RoomType> getAvailableRoomTypes(Date checkInDate, Date checkOutDate) {
-        Query totalRoomTypeQuery = em.createQuery("SELECT r FROM RoomType r WHERE r.checkInDate BETWEEN ?1 AND ?2");
-        totalRoomTypeQuery.setParameter(1, checkInDate);
-        totalRoomTypeQuery.setParameter(2, checkOutDate);
-        List<RoomType> totalRoomTypes = totalRoomTypeQuery.getResultList();
+    public List<RoomType> getAvailableRoomTypes(Date checkInDate, Date checkOutDate, Integer numOfRooms) {
+        Query query = em.createQuery("SELECT r FROM RoomType r");
+        List<RoomType> allRoomTypes = query.getResultList();
+        List<RoomType> availableRoomTypes = new ArrayList<RoomType>();
         
-        Query reservedRoomTypeQuery = em.createQuery("SELECT r FROM Reservation r WHERE r.checkInDate BETWEEN ?1 AND ?2");
-        reservedRoomTypeQuery.setParameter(1, checkInDate);
-        reservedRoomTypeQuery.setParameter(2, checkOutDate);
-        List<RoomType> reservedRoomTypes = reservedRoomTypeQuery.getResultList();
+        for(RoomType roomType: allRoomTypes){
+            roomType.getRoomRates().size();
+            roomType.getRooms().size();
+        }
         
-        totalRoomTypes.removeAll(reservedRoomTypes);
-        
-        return totalRoomTypes;
+        for(int i = 0; i < allRoomTypes.size(); i++){
+            RoomType roomType = allRoomTypes.get(i);
+            Query roomQuery = em.createQuery("SELECT r FROM Room r WHERE r.roomType = ?1 AND r.roomStatus ");
+            roomQuery.setParameter(1, roomType);
+            
+            Query reservationQuery = em.createQuery("SELECT r FROM Reservation r WHERE r.roomType = ?1"
+                    + "(r.checkIn >= ?2 AND r.checkInDate < ?3)"
+                    + "OR (r.checkOutDate > ?4 AND r.checkOutDate <= 5)");
+            
+            reservationQuery.setParameter(1, roomType);
+            reservationQuery.setParameter(2, checkInDate);
+            reservationQuery.setParameter(3, checkOutDate);
+            reservationQuery.setParameter(4, checkInDate);
+            reservationQuery.setParameter(5, checkOutDate);
+            
+            Integer availability = roomQuery.getResultList().size() - reservationQuery.getResultList().size();
+            if(availability >= numOfRooms){
+                availableRoomTypes.add(roomType);
+            }
+            
+        }
+        return availableRoomTypes;
     }
 }

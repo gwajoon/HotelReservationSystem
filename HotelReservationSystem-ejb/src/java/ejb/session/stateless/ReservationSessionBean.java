@@ -54,13 +54,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
     
-    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId) throws UnknownPersistenceException {
+    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException {
         try {
             RoomType roomType = em.find(RoomType.class, roomTypeId);
+            RegisteredGuest guest = em.find(RegisteredGuest.class, guestId);
+            
             reservation.setRoomType(roomType);
             reservation.setReservationType("Online");
             em.persist(reservation);
             em.flush();
+            guest.getReservations().add(reservation);
             return reservation.getId();
 
         } catch (PersistenceException ex) {
@@ -93,17 +96,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
-    public BigDecimal calculatePrice(Long reservationId) {
+    public BigDecimal calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType) {
 
         List<RoomRate> roomRates;
         BigDecimal price = new BigDecimal(0.0);
+;
 
-        Reservation reservation = em.find(Reservation.class, reservationId);
-        RoomType roomType = reservation.getRoomType();
-        LocalDateTime checkInDate = reservation.getCheckInDate();
-        LocalDateTime checkOutDate = reservation.getCheckOutDate();
-
-        if (reservation.getReservationType().equals("Walk-In")) {
+        if (reservationType.equals("Walk-In")) {
             roomRates = getRoomRates(checkInDate, checkOutDate, roomType, "Walk-In");
         } else {
             roomRates = getRoomRates(checkInDate, checkOutDate, roomType, "Online");

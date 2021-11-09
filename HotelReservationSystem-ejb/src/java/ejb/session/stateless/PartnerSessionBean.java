@@ -26,10 +26,12 @@ import util.exception.UnknownPersistenceException;
 @Stateless
 public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSessionBeanLocal {
 
+    @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
+    private EntityManager em;
+
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    @PersistenceContext
-    private EntityManager em;
+    
 
     public PartnerSessionBean() {
     }
@@ -105,4 +107,6 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         Query query = em.createQuery("SELECT p FROM Partner p");
         return query.getResultList();
     }
+
+    
 }
