@@ -18,6 +18,8 @@ import util.exception.UnknownPersistenceException;
  */
 @Local
 public interface ReservationSessionBeanLocal {
-    public BigDecimal calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType);
-     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
+
+    public Double calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType);
+
+    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
 }

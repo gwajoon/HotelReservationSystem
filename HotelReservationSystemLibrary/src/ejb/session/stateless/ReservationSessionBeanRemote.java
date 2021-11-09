@@ -24,14 +24,12 @@ public interface ReservationSessionBeanRemote {
 
     public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId) throws UnknownPersistenceException;
 
-   
+    public Double calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType);
 
     public List<Reservation> viewAllReservations(Long registeredGuestId) throws RegisteredGuestNotFoundException;
-
-    public BigDecimal calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType);
 
     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
 
     public Reservation viewReservation(Long reservationId) throws ReservationNotFoundException;
-    
+
 }

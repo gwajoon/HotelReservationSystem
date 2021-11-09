@@ -20,9 +20,9 @@ import util.exception.UnknownPersistenceException;
 @Local
 public interface EmployeeSessionBeanLocal {
 
-    Employee employeeLogin(String email, String password) throws InvalidLoginCredentialException;
+    Employee employeeLogin(String username, String password) throws InvalidLoginCredentialException;
 
-    Employee retrieveEmployeeByEmail(String email) throws EmployeeNotFoundException;
+    Employee retrieveEmployeeByUsername(String username) throws EmployeeNotFoundException;
 
     Long createNewEmployee(Employee newEmployee) throws EmployeeEmailExistException, UnknownPersistenceException;
 

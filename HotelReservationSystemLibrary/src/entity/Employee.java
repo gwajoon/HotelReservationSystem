@@ -32,7 +32,7 @@ public class Employee implements Serializable {
     @Column(length = 32, nullable = false)
     private String lastName;
     @Column(length = 32, nullable = false, unique = true)
-    private String email;
+    private String username;
     @Column(length = 32, nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
@@ -44,10 +44,10 @@ public class Employee implements Serializable {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String email, String password, EmployeeType employeeType) {
+    public Employee(String firstName, String lastName, String username, String password, EmployeeType employeeType) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        this.username = username;
         this.password = password;
         this.employeeType = employeeType;
     }
@@ -76,12 +76,12 @@ public class Employee implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -122,7 +122,7 @@ public class Employee implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Employee[ id=" + id + " " + firstName + " " + lastName + " " + email + " " + password + " " + employeeType + " ]";
+        return "entity.Employee[ id=" + id + " " + firstName + " " + lastName + " " + username + " " + password + " " + employeeType + " ]";
     }
     
 }

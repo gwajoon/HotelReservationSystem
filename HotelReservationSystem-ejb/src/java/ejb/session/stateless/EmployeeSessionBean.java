@@ -41,11 +41,11 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     }
 
     @Override
-    public Employee employeeLogin(String email, String password) throws InvalidLoginCredentialException 
+    public Employee employeeLogin(String username, String password) throws InvalidLoginCredentialException 
     {
         try 
         {
-           Employee employee = retrieveEmployeeByEmail(email);
+           Employee employee = retrieveEmployeeByUsername(username);
            
            if (employee.getPassword().equals(password)) 
            {
@@ -53,26 +53,26 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
            }
            else 
            {
-               throw new InvalidLoginCredentialException("Invalid email or password.");
+               throw new InvalidLoginCredentialException("Invalid username or password.");
            }
         }
         catch (EmployeeNotFoundException ex) {
-            throw new InvalidLoginCredentialException("Invalid email or password.");
+            throw new InvalidLoginCredentialException("Invalid username or password.");
         }
     }
 
     @Override
-    public Employee retrieveEmployeeByEmail(String email) throws EmployeeNotFoundException 
+    public Employee retrieveEmployeeByUsername(String username) throws EmployeeNotFoundException 
     {
-        Query query = em.createQuery("SELECT e FROM Employee e WHERE e.email = :inEmail");
-        query.setParameter("inEmail", email);
+        Query query = em.createQuery("SELECT e FROM Employee e WHERE e.username = :username");
+        query.setParameter("username", username);
         
         try {
             return (Employee)query.getSingleResult();
         }
         catch (NoResultException | NonUniqueResultException ex)
         {
-            throw new EmployeeNotFoundException("Employee email " + email + " does not exist!");
+            throw new EmployeeNotFoundException("Employee username " + username + " does not exist!");
         }
     }
 

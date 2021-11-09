@@ -29,7 +29,7 @@ public class Room implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, unique = true)
-    private Long roomNum;
+    private String roomNum;
     @Column(nullable = false)
     private Boolean roomStatus;
     
@@ -44,7 +44,7 @@ public class Room implements Serializable {
         this.reservations = new ArrayList<Reservation>();
     }
 
-    public Room(Long roomNum) {
+    public Room(String roomNum) {
         this();
         this.roomNum = roomNum;
         this.roomStatus = true;
@@ -102,14 +102,14 @@ public class Room implements Serializable {
     /**
      * @return the roomNum
      */
-    public Long getRoomNumber() {
+    public String getRoomNumber() {
         return roomNum;
     }
 
     /**
      * @param roomNum the roomNum to set
      */
-    public void setRoomNumber(Long roomNum) {
+    public void setRoomNumber(String roomNum) {
         this.roomNum = roomNum;
     }
 

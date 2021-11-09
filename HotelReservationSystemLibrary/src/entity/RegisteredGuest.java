@@ -31,7 +31,7 @@ public class RegisteredGuest extends Guest implements Serializable {
     private String firstName;
     @Column(length = 32, nullable = false)
     private String lastName;
-    @Column(length = 32, nullable = false)
+    @Column(length = 32, nullable = false, unique = true)
     private String email;
     @Column(length = 32, nullable = false)
     private String password;
@@ -45,9 +45,10 @@ public class RegisteredGuest extends Guest implements Serializable {
 
 
     public RegisteredGuest(String email, String password, String firstName, String lastName) {
-        super(firstName, lastName);
         this.email = email;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
     
     @Override

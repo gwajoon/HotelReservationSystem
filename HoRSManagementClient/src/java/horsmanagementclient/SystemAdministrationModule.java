@@ -151,7 +151,7 @@ public class SystemAdministrationModule {
         
         for (Employee e : employees)
         {
-            System.out.printf("Employee id: %s, first name: %s, last name: %s, email: %s, employee type: %s ", e.getId(), e.getFirstName(), e.getLastName(), e.getEmail(), e.getEmployeeType());
+            System.out.printf("Employee id: %s, first name: %s, last name: %s, email: %s, employee type: %s ", e.getId(), e.getFirstName(), e.getLastName(), e.getUsername(), e.getEmployeeType());
         }
     }
     

@@ -20,13 +20,13 @@ import util.exception.UnknownPersistenceException;
 @Remote
 public interface EmployeeSessionBeanRemote {
 
-    Employee employeeLogin(String email, String password) throws InvalidLoginCredentialException;
+    
 
-    Employee retrieveEmployeeByEmail(String email) throws EmployeeNotFoundException, UnknownPersistenceException;
+    Employee employeeLogin(String username, String password) throws InvalidLoginCredentialException;
     
     Long createNewEmployee(Employee newEmployee) throws EmployeeEmailExistException, UnknownPersistenceException;
 
     List<Employee> retrieveAllEmployees();
 
-    
+    Employee retrieveEmployeeByUsername(String username) throws EmployeeNotFoundException;
 }

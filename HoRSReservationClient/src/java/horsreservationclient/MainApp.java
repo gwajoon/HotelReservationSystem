@@ -64,9 +64,9 @@ public class MainApp {
                 response = scanner.nextInt();
 
                 if (response == 1) {
-                    doCreateNewRegisteredGuest();
-                } else if (response == 2) {
                     doGuestLogin();
+                } else if (response == 2) {
+                    doCreateNewRegisteredGuest();
                 } else if (response == 3) {
                     doSearchHotelRoom();
                 } else if (response == 4) {
@@ -236,14 +236,19 @@ public class MainApp {
 
         System.out.println("Enter Reservation Id>");
         Long reservationId = scanner.nextLong();
+        Reservation reservation;
 
         try {
-            Reservation reservation = reservationSessionBeanRemote.viewReservation(reservationId);
+            reservation = reservationSessionBeanRemote.viewReservation(reservationId);
+            System.out.println(reservation.toString());
+                
+                
         } catch (ReservationNotFoundException ex) {
             System.out.println("Reservation " + reservationId + " not found");
         }
         
-        System.out.println("Reservation ");
+        
+                
 
     }
     
@@ -251,7 +256,11 @@ public class MainApp {
         
         
         try{
-            reservationSessionBeanRemote.viewAllReservations(this.currentGuest.getId());
+            List<Reservation> reservations = reservationSessionBeanRemote.viewAllReservations(this.currentGuest.getId());
+            
+            for(Reservation reservation: reservations){
+                System.out.println(reservation.toString());
+            }
         } catch (RegisteredGuestNotFoundException ex){
             System.out.println("Registered Guest " + this.currentGuest.getId() + " not found");
         }

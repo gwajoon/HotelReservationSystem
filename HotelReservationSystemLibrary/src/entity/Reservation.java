@@ -39,26 +39,23 @@ public class Reservation implements Serializable {
     private int numberOfRooms;
     @Column(nullable = false)
     private String reservationType;
-    
-    
+
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Guest guest;
-    
+
     @ManyToOne(optional = false)
     private RoomType roomType;
-    
+
     @ManyToMany
     private List<Room> rooms;
-    
+
     @OneToMany
     private List<RoomRate> roomRates;
-    
-    
 
     public Reservation() {
         this.rooms = new ArrayList<Room>();
-        
+
     }
 
     public Reservation(LocalDateTime checkInDate, LocalDateTime checkOutDate, Guest guest, String reservationType) {
@@ -108,8 +105,6 @@ public class Reservation implements Serializable {
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
     }
-    
-    
 
     @Override
     public int hashCode() {
@@ -133,7 +128,9 @@ public class Reservation implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Reservation[ id=" + id + " ]";
+        return "" + this.reservationType + "Reservation " + this.id + " from "
+                + this.checkInDate.toString() + " to " + this.checkOutDate.toString()
+                + " for " + this.numberOfRooms + this.roomType.getName();
     }
 
     /**
@@ -192,6 +189,4 @@ public class Reservation implements Serializable {
         this.reservationType = reservationType;
     }
 
-  
-    
 }

@@ -96,10 +96,10 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
-    public BigDecimal calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType) {
+    public Double calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType) {
 
         List<RoomRate> roomRates;
-        BigDecimal price = new BigDecimal(0.0);
+        Double price = 0.0;
 ;
 
         if (reservationType.equals("Walk-In")) {
@@ -109,7 +109,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
 
         for (RoomRate roomRate : roomRates) {
-            price = price.add(roomRate.getRatePerNight());
+            price += roomRate.getRatePerNight();
         }
         return price;
 
