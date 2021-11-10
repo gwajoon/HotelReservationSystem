@@ -5,7 +5,7 @@
  */
 package ejb.session.stateless;
 
-import entity.Room;
+import entity.Reservation;
 import entity.RoomType;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,16 +42,21 @@ public class RoomInventorySessionBean implements RoomInventorySessionBeanRemote,
             roomQuery.setParameter(1, roomType);
             
             Query reservationQuery = em.createQuery("SELECT r FROM Reservation r WHERE r.roomType = ?1"
-                    + " AND ( (r.checkInDate >= ?2 AND r.checkInDate < ?3)"
-                    + "OR (r.checkOutDate > ?4 AND r.checkOutDate <= ?5))");
+                    + " AND ( (?2 >= r.checkInDate AND ?3 < r.checkOutDate)"
+                    + "OR (?4 > r.checkInDate AND ?5 <= r.checkOutDate))");
             
             reservationQuery.setParameter(1, roomType);
             reservationQuery.setParameter(2, checkInDate);
-            reservationQuery.setParameter(3, checkOutDate);
-            reservationQuery.setParameter(4, checkInDate);
+            reservationQuery.setParameter(3, checkInDate);
+            reservationQuery.setParameter(4, checkOutDate);
             reservationQuery.setParameter(5, checkOutDate);
             
-            Integer availability = roomQuery.getResultList().size() - reservationQuery.getResultList().size();
+            Integer takenRooms = 0;
+            for(Reservation reservation : (List<Reservation>) reservationQuery.getResultList()){
+                takenRooms += reservation.getNumberOfRooms();
+            }
+            
+            Integer availability = roomQuery.getResultList().size() - takenRooms;
             if(availability >= numOfRooms){
                 availableRoomTypes.add(roomType);
             }

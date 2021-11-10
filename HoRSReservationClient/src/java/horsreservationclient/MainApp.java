@@ -203,25 +203,26 @@ public class MainApp {
                 RoomType roomType = availableRoomTypes.get(i - 1);
                 System.out.println("" + i + " " + roomType.getName() + " " + reservationSessionBeanRemote.calculatePrice(checkInDate, checkOutDate, roomType.getId(), "Online", numOfRooms) + ", \n");
             }
+        } else {
+            System.out.println("No Rooms Available");
         }
+        if (currentGuest != null) {
+            System.out.println("Make a reservation? >");
+            System.out.println("1: Yes");
+            System.out.println("2: No");
 
-        System.out.println("Make a reservation? >");
-        System.out.println("1: Yes");
-        System.out.println("2: No");
+            if (scanner.nextInt() == 1) {
 
-        if (scanner.nextInt() == 1) {
-            
-            
-            
-            System.out.println("Select Room Type >");
-            for (int i = 1; i <= availableRoomTypes.size(); i++) {
-                RoomType roomType = availableRoomTypes.get(i - 1);
-                System.out.println("" + i + " " + roomType.getName() + " " + reservationSessionBeanRemote.calculatePrice(checkInDate, checkOutDate, roomType.getId(), "Online", numOfRooms) + ", \n");
-            }
-            int selection = scanner.nextInt();
-            
-            if (currentGuest.getId() != null) {
-                doReserveHotelRoom(availableRoomTypes.get(selection).getId(), checkInDate, checkOutDate, numOfRooms, currentGuest.getId());
+                System.out.println("Select Room Type >");
+                for (int i = 1; i <= availableRoomTypes.size(); i++) {
+                    RoomType roomType = availableRoomTypes.get(i - 1);
+                    System.out.println("" + i + " " + roomType.getName() + " " + reservationSessionBeanRemote.calculatePrice(checkInDate, checkOutDate, roomType.getId(), "Online", numOfRooms) + ", \n");
+                }
+                int selection = scanner.nextInt();
+
+                if (currentGuest.getId() != null) {
+                    doReserveHotelRoom(availableRoomTypes.get(selection - 1).getId(), checkInDate, checkOutDate, numOfRooms, currentGuest.getId());
+                }
             }
         }
     }

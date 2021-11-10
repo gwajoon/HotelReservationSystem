@@ -23,8 +23,6 @@ import util.exception.UnknownPersistenceException;
 @Remote
 public interface ReservationSessionBeanRemote {
 
-    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId) throws UnknownPersistenceException;
-
     public List<Reservation> viewAllReservations(Long registeredGuestId) throws RegisteredGuestNotFoundException;
 
     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
@@ -32,5 +30,7 @@ public interface ReservationSessionBeanRemote {
     public Reservation viewReservation(Long reservationId) throws ReservationNotFoundException;
 
     public Double calculatePrice(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType, Integer numOfRooms);
+
+    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException;
 
 }

@@ -39,13 +39,27 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId) throws UnknownPersistenceException {
+    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException {
         try {
+            Query query = em.createQuery("SELECT g FROM Guest g WHERE g.email = ?1");
+            query.setParameter(1, email);
+
+            Guest guest;
+
+            try {
+                guest = (Guest) query.getSingleResult();
+            } catch (NoResultException ex) {
+                guest = new Guest(firstName, lastName, email);
+                em.persist(guest);
+            }
+
             RoomType roomType = em.find(RoomType.class, roomTypeId);
             reservation.setRoomType(roomType);
+            reservation.setGuest(guest);
             reservation.setReservationType("Walk-In");
             em.persist(reservation);
             em.flush();
+            guest.getReservations().add(reservation);
             return reservation.getId();
 
         } catch (PersistenceException ex) {
@@ -121,11 +135,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     public List<RoomRate> getRoomRates(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType) {
         List<RoomRate> roomRates = new ArrayList<RoomRate>();
 
-
         long diffInMillies = Math.abs(checkOutDate.getTime() - checkInDate.getTime());
         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        
-        
+
         Calendar start = Calendar.getInstance();
         start.setTime(checkInDate);
         Calendar end = Calendar.getInstance();
