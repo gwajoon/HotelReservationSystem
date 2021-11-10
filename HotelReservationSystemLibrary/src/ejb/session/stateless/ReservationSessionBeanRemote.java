@@ -9,6 +9,7 @@ import entity.Reservation;
 import entity.RoomType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.RegisteredGuestNotFoundException;
@@ -24,12 +25,12 @@ public interface ReservationSessionBeanRemote {
 
     public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId) throws UnknownPersistenceException;
 
-    public Double calculatePrice(LocalDateTime checkInDate, LocalDateTime checkOutDate, RoomType roomType, String reservationType);
-
     public List<Reservation> viewAllReservations(Long registeredGuestId) throws RegisteredGuestNotFoundException;
 
     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
 
     public Reservation viewReservation(Long reservationId) throws ReservationNotFoundException;
+
+    public Double calculatePrice(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType, Integer numOfRooms);
 
 }

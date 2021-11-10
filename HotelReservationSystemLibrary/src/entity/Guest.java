@@ -30,13 +30,12 @@ public class Guest implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
     @Column(length = 32, nullable = false)
-    private String firstName;
+    protected String firstName;
     @Column(length = 32, nullable = false)
-    private String lastName;
-    @Column(length = 32, nullable = false)
-    private String email;
-    @Column(length = 32, nullable = false)
-    private String password;
+    protected String lastName;
+    @Column(length = 32, nullable = false, unique = true)
+    protected String email;
+
 
     @OneToMany
     private List<Reservation> reservations;
@@ -45,11 +44,11 @@ public class Guest implements Serializable {
         this.reservations = new ArrayList<Reservation>();
     }
 
-    public Guest(String firstName, String lastName) {
+    public Guest(String firstName, String lastName, String email) {
         this();
         this.firstName = firstName;
         this.lastName = lastName;
-
+        this.email = email;
     }
 
     public Long getId() {
@@ -121,20 +120,6 @@ public class Guest implements Serializable {
      */
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    /**
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * @param password the password to set
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    } 
 
 }

@@ -130,9 +130,9 @@ public class Reservation implements Serializable {
 
     @Override
     public String toString() {
-        return "" + this.reservationType + "Reservation " + this.id + " from "
+        return "" + this.reservationType + " Reservation " + this.id + " from "
                 + this.checkInDate.toString() + " to " + this.checkOutDate.toString()
-                + " for " + this.numberOfRooms + this.roomType.getName();
+                + " for " + this.numberOfRooms + " " + this.roomType.getName();
     }
 
     /**

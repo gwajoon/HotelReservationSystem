@@ -20,37 +20,22 @@ import javax.persistence.OneToMany;
  * @author seanang
  */
 @Entity
-public class RegisteredGuest implements Serializable {
+public class RegisteredGuest extends Guest implements Serializable {
 
     private static final long serialVersionUID = 1L;
-  
-     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(length = 32, nullable = false)
-    private String firstName;
-    @Column(length = 32, nullable = false)
-    private String lastName;
-    @Column(length = 32, nullable = false, unique = true)
-    private String email;
+
     @Column(length = 32, nullable = false)
     private String password;
 
-    @OneToMany
-    private List<Reservation> reservations;
-
     public RegisteredGuest() {
-        this.reservations = new ArrayList<Reservation>();
+       
     }
-
 
     public RegisteredGuest(String firstName, String lastName, String email, String password) {
-        this.email = email;
+        super(firstName, lastName, email);
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -77,20 +62,6 @@ public class RegisteredGuest implements Serializable {
     }
 
     /**
-     * @return the email
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * @param email the email to set
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    /**
      * @return the password
      */
     public String getPassword() {
@@ -102,48 +73,6 @@ public class RegisteredGuest implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    /**
-     * @return the firstName
-     */
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * @param firstName the firstName to set
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * @return the lastName
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * @param lastName the lastName to set
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    /**
-     * @return the reservations
-     */
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    /**
-     * @param reservations the reservations to set
-     */
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
     }
 
     /**
@@ -159,5 +88,5 @@ public class RegisteredGuest implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
 }
