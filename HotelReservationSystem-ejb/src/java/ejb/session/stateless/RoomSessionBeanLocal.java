@@ -23,10 +23,12 @@ public interface RoomSessionBeanLocal {
 
     public List<Room> viewAllRooms();
 
-    public void deleteRoom(Long roomId) throws DeleteRoomException;
+    public void deleteRoom(Long roomId) throws RoomNotFoundException, DeleteRoomException;
 
-    public void updateRoomType(Room room) throws UpdateRoomException, RoomNotFoundException;
-
+    public void updateRoom(Room room) throws RoomNotFoundException;
+    
     public Long createNewRoom(Room room, Long roomTypeId) throws RoomNumberExistException, UnknownPersistenceException;
+
+    public Room retrieveRoomByRoomId(Long roomId) throws RoomNotFoundException;
 
 }

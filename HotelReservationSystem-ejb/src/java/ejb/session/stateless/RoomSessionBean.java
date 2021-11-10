@@ -53,37 +53,34 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
             }
         }
     }
-    
-    public void updateRoomType(Room room) throws UpdateRoomException, RoomNotFoundException {
+
+    @Override
+    public void updateRoom(Room room) throws RoomNotFoundException {
 
         if (room != null && room.getId() != null) {
             Room roomToUpdate = em.find(Room.class, room.getId());
-
-            if (roomToUpdate.getRoomNumber().equals(room.getRoomNumber())) {
-                roomToUpdate.setRoomType(room.getRoomType());
-                roomToUpdate.setRoomStatus(room.getRoomStatus());
-
-            } else {
-                throw new UpdateRoomException("Room Number record to be updated does not match the existing record");
-            }
+            roomToUpdate.setRoomNumber(room.getRoomNumber());
+            roomToUpdate.setRoomType(room.getRoomType());
+            roomToUpdate.setRoomStatus(room.getRoomStatus());
         } else {
-            throw new RoomNotFoundException("Room ID not provided for Room to be updated");
+            throw new RoomNotFoundException("Room ID not valid");
         }
     }
-    
-    public void deleteRoom(Long roomId) throws DeleteRoomException {
+
+    @Override
+    public void deleteRoom(Long roomId) throws RoomNotFoundException, DeleteRoomException {
 
         Room roomToRemove = em.find(Room.class, roomId);
-        
-        if(roomToRemove.getReservations().isEmpty())
-        {
+
+        if (roomToRemove.getReservations().isEmpty()) {
             em.remove(roomToRemove);
         } else {
             throw new DeleteRoomException("Room ID " + roomId + " is associated with existing reservations and cannot be deleted!");
         }
 
     }
-    
+
+    @Override
     public List<Room> viewAllRooms() {
 
         Query query = em.createQuery("Select r FROM Room r");
@@ -92,5 +89,15 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
 
     }
 
+    @Override
+    public Room retrieveRoomByRoomId(Long roomId) throws RoomNotFoundException {
+        Room room = em.find(Room.class, roomId);
+
+        if (room != null) {
+            return room;
+        } else {
+            throw new RoomNotFoundException("Room ID " + roomId + " does not exist!");
+        }
+    }
 
 }
