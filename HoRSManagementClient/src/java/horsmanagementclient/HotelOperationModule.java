@@ -10,7 +10,6 @@ import ejb.session.stateless.RoomSessionBeanRemote;
 import entity.Employee;
 import entity.RoomRate;
 import entity.RoomType;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 import static util.enumeration.EmployeeType.OPERATION_MANAGER;
@@ -28,9 +27,12 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.enumeration.RateType;
+import util.exception.DeleteRoomException;
 import util.exception.DeleteRoomTypeException;
+import util.exception.RoomNotFoundException;
 import util.exception.RoomNumberExistException;
 import util.exception.RoomTypeNotFoundException;
+import util.exception.UpdateRoomException;
 import util.exception.UpdateRoomTypeException;
 
 /**
@@ -83,9 +85,8 @@ public class HotelOperationModule {
                     } else if (response == 3) {
                         doCreateNewRoom();
                     } else if (response == 4) {
-                        doViewAllRooms();
+                        doViewRooms();
                     } else if (response == 5) {
-
                     } else if (response == 6) {
                         break;
                     }
@@ -275,7 +276,7 @@ public class HotelOperationModule {
         for (RoomType rt : roomTypes) {
 
             System.out.println("Room Type Id: " + rt.getId() + ". " + rt.getName());
-            
+
         }
 
         System.out.print(">");
@@ -299,16 +300,121 @@ public class HotelOperationModule {
 
     }
 
+    private void doViewRooms() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View Room Details ***\n");
+        List<Room> rooms = roomSessionBeanRemote.viewAllRooms();
+
+        for (Room r : rooms) {
+            System.out.println("Room Id: " + r.getId() + ". " + r.getRoomNumber());
+        }
+        System.out.println("Enter ID of Room to view");
+        System.out.print(">");
+
+        try {
+            Long roomId = scanner.nextLong();
+            Room room = roomSessionBeanRemote.retrieveRoomByRoomId(roomId);
+
+            System.out.println("** " + "Room ID: " + room.getId() + ", Room number: " + room.getRoomNumber() + " **\n");
+            System.out.printf("Room Type: %s, Room Status: %s\n", room.getRoomType().getName(), room.getRoomStatus().toString());
+            System.out.println("------------------------");
+            System.out.println("1: Update Room");
+            System.out.println("2: Delete Room");
+            System.out.println("3: Back\n");
+            System.out.print("> ");
+            int response = scanner.nextInt();
+
+            if (response == 1) {
+                doUpdateRoom(room);
+            } else if (response == 2) {
+                doDeleteRoom(room);
+            }
+        } catch (RoomNotFoundException ex) {
+            System.out.println("An error has occurred while retrieving room: " + ex.getMessage() + "\n");
+        }
+    }
+
+    private void doUpdateRoom(Room room) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: Update  Room ***\n");
+        System.out.print("Enter new room number (blank if no change) > ");
+        String number = scanner.nextLine();
+        if (number.length() > 0) {
+            room.setRoomNumber(number);
+        }
+
+        List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
+
+        for (RoomType rt : roomTypes) {
+            System.out.println("Room Id: " + rt.getId() + ". " + rt.getName());
+        }
+        System.out.print("Choose ID of new room type > ");
+
+        Long roomTypeId = scanner.nextLong();
+
+        int availability = 0;
+
+        while (availability < 1 || availability > 2) {
+            System.out.println("Set the availability of the room > ");
+            System.out.println("1. True");
+            System.out.println("2. False");
+            System.out.print("> ");
+
+            availability = scanner.nextInt();
+            if (availability == 1) {
+                room.setRoomStatus(true);
+            } else if (availability == 2) {
+                room.setRoomStatus(false);
+            } else {
+                System.out.println("Invalid option. Please choose again.");
+            }
+        }
+
+        try {
+            if (roomTypeId.toString().length() > 0) {
+                RoomType roomType = roomTypeSessionBeanRemote.retrieveRoomTypeByRoomTypeId(roomTypeId);
+                room.setRoomType(roomType);
+            }
+            roomSessionBeanRemote.updateRoom(room);
+            System.out.println("Room updated successfully!\n");
+        } catch (RoomNotFoundException ex) {
+            System.out.println("An error has occurred while updating room: " + ex.getMessage() + "\n");
+        } catch (RoomTypeNotFoundException ex) {
+            System.out.println("An error occurred while updating room: " + ex.getMessage() + "\n");
+        }
+    }
+
+    private void doDeleteRoom(Room room) {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+
+        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: Delete Room ***\n");
+        System.out.printf("Confirm Delete Room %s (Room ID: %d) (Enter 'Y' to Delete)> ", room.getRoomNumber(), room.getId());
+        input = scanner.nextLine().trim();
+
+        if (input.equals("Y")) {
+            try {
+                roomSessionBeanRemote.deleteRoom(room.getId());
+                System.out.println("Room Rate deleted successfully!\n");
+            } catch (RoomNotFoundException | DeleteRoomException ex) {
+                System.out.println("An error has occurred while deleting the room: " + ex.getMessage() + "\n");
+            }
+        } else {
+            System.out.println("Room rate NOT deleted!\n");
+        }
+    }
+
     public void doViewAllRooms() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View All Room ***\n");
 
         List<Room> rooms = roomSessionBeanRemote.viewAllRooms();
-        
+
         for (Room r : rooms) {
-            System.out.println("** " + "Room ID: " + r.getId() + ", Room number: " + r.getRoomNumber() + "Room Status: " + r.getRoomStatus() + "Room Type: " + r.getRoomType().getName() + "\n");
+            System.out.println("** " + "Room ID: " + r.getId() + ", Room number: " + r.getRoomNumber() + ", Room Status: " + r.getRoomStatus() + ", Room Type: " + r.getRoomType().getName() + "\n");
         }
-        
+
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
@@ -351,16 +457,16 @@ public class HotelOperationModule {
         }
 
         System.out.println(newRoomRate.getName() + newRoomRate.getRatePerNight() + newRoomRate.getStartDate() + newRoomRate.getEndDate());
-        
+
         System.out.println("Select Room Type");
         List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
         for (RoomType rt : roomTypes) {
             System.out.println("Room type id: " + rt.getId() + ". " + rt.getName());
         }
-        
+
         System.out.print(">");
         Long roomTypeId = scanner.nextLong();
-        
+
         try {
             Long newRoomRateId = roomRateSessionBeanRemote.createNewRoomRate(newRoomRate, roomTypeId);
             System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
