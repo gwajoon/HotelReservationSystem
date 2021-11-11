@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Guest;
+import entity.Partner;
 import entity.RegisteredGuest;
 import entity.Reservation;
 import entity.RoomRate;
@@ -23,6 +24,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.enumeration.RateType;
+import util.exception.PartnerNotFoundException;
 import util.exception.RegisteredGuestNotFoundException;
 import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -39,6 +41,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+    @Override
     public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException {
         try {
             Query query = em.createQuery("SELECT g FROM Guest g WHERE g.email = ?1");
@@ -69,6 +72,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
+    @Override
     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException {
         try {
             RoomType roomType = em.find(RoomType.class, roomTypeId);
@@ -88,6 +92,26 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         }
     }
+    
+    public Long createNewPartnerReservation(Reservation reservation, Long roomTypeId, Long partnerId) throws UnknownPersistenceException {
+        try {
+            RoomType roomType = em.find(RoomType.class, roomTypeId);
+            Partner partner = em.find(Partner.class, partnerId);
+
+            reservation.setRoomType(roomType);
+            reservation.setReservationType("Online");
+            reservation.setGuest(partner);
+            em.persist(reservation);
+            em.flush();
+            partner.getReservations().add(reservation);
+            return reservation.getId();
+
+        } catch (PersistenceException ex) {
+
+            throw new UnknownPersistenceException(ex.getMessage());
+
+        }
+    }
 
     public Reservation viewReservation(Long reservationId) throws ReservationNotFoundException {
         Reservation reservation = em.find(Reservation.class, reservationId);
@@ -99,6 +123,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
+    @Override
     public List<Reservation> viewAllReservations(Long registeredGuestId) throws RegisteredGuestNotFoundException {
         Guest guest = em.find(Guest.class, registeredGuestId);
 
@@ -110,6 +135,18 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
     
+    @Override
+    public List<Reservation> viewAllPartnerReservations(Long partnerId) throws PartnerNotFoundException {
+        Guest guest = em.find(Guest.class, partnerId);
+
+        if (guest != null) {
+            guest.getReservations().size();
+            return guest.getReservations();
+        } else {
+            throw new PartnerNotFoundException("Partner ID " + partnerId + " does not exist!");
+        }
+    }
+
     public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException{
         Reservation reservation = em.find(Reservation.class, reservationId);
         
@@ -123,13 +160,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return reservation;  
     }
 
+    @Override
     public Double calculatePrice(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType, Integer numOfRooms) {
 
         List<RoomRate> roomRates;
         Double price = 0.0;
 
         RoomType roomType = em.find(RoomType.class, roomTypeId);
-        ;
 
         if (reservationType.equals("Walk-In")) {
             roomRates = getRoomRates(checkInDate, checkOutDate, roomTypeId, "Walk-In");

@@ -45,7 +45,9 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
            
            if (partner.getPassword().equals(password)) 
            {
+               partner.getReservations().size();
                return partner;
+               
            }
            else 
            {
@@ -79,7 +81,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
             em.persist(newPartner);
             em.flush();
 
-            return newPartner.getPartnerId();
+            return newPartner.getId();
         }
         
         catch(PersistenceException ex)
