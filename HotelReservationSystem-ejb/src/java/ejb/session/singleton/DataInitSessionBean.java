@@ -6,6 +6,7 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.EmployeeSessionBeanLocal;
+import ejb.session.stateless.PartnerSessionBeanLocal;
 import ejb.session.stateless.ReservationSessionBeanLocal;
 import ejb.session.stateless.RoomRateSessionBeanLocal;
 import ejb.session.stateless.RoomTypeSessionBeanLocal;
@@ -26,8 +27,10 @@ import util.exception.RoomNumberExistException;
 import util.exception.RoomTypeNameExistsException;
 import util.exception.UnknownPersistenceException;
 import ejb.session.stateless.RoomSessionBeanLocal;
+import entity.Partner;
 import entity.RoomRate;
 import util.enumeration.RateType;
+import util.exception.PartnerEmailExistException;
 import util.exception.RoomRateNameExistsException;
 
 /**
@@ -50,6 +53,8 @@ public class DataInitSessionBean {
     private RoomSessionBeanLocal roomSessionBeanLocal;
     @EJB
     private ReservationSessionBeanLocal reservationSessionBeanLocal;
+    @EJB
+    private PartnerSessionBeanLocal partnerSessionBeanLocal;
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
@@ -69,6 +74,8 @@ public class DataInitSessionBean {
 
     public void initialiseData() {
         try {
+            partnerSessionBeanLocal.createNewPartner(new Partner("Hotel", "Trivago", "admin@hoteltrivago.com", "password"));
+            
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "sysadmin", "password", EmployeeType.SYSTEM_ADMIN));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "opmanager", "password", EmployeeType.OPERATION_MANAGER));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "salesmanager", "password", EmployeeType.SALES_MANAGER));
@@ -170,7 +177,7 @@ public class DataInitSessionBean {
             roomSessionBeanLocal.createNewRoom(grandSuite4, grandId);
             roomSessionBeanLocal.createNewRoom(grandSuite5, grandId);
 
-        } catch (EmployeeEmailExistException | UnknownPersistenceException | RoomTypeNameExistsException | RoomNumberExistException ex) {
+        } catch (EmployeeEmailExistException | UnknownPersistenceException | RoomTypeNameExistsException | RoomNumberExistException | PartnerEmailExistException ex) {
             ex.printStackTrace();
         }
 

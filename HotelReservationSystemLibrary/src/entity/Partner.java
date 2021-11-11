@@ -18,7 +18,7 @@ import javax.persistence.Id;
  * @author GuoJun
  */
 @Entity
-public class Partner implements Serializable {
+public class Partner extends Guest implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id

@@ -6,11 +6,12 @@
 package ejb.session.stateless;
 
 import entity.Reservation;
-import entity.RoomType;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import entity.RoomRate;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
+import util.exception.RegisteredGuestNotFoundException;
+import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -20,7 +21,15 @@ import util.exception.UnknownPersistenceException;
 @Local
 public interface ReservationSessionBeanLocal {
 
+    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException;
+
     public Double calculatePrice(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType, Integer numOfRooms);
+
+    public Reservation viewReservation(Long reservationId) throws ReservationNotFoundException;
+
+    public List<Reservation> viewAllReservations(Long registeredGuestId) throws RegisteredGuestNotFoundException;
+
+    public List<RoomRate> getRoomRates(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType);
 
     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
 }
