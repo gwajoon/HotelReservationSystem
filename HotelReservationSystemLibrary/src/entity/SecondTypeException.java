@@ -11,51 +11,61 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  *
  * @author seanang
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class SecondTypeException implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long secondTypeExceptionId;
-     @Column(nullable = false)
-    private String message;
+    protected Long id;
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    protected RoomType oldRoomType; 
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    protected Reservation reservation;
 
     public SecondTypeException() {
     }
-
-    public SecondTypeException(String message) {
-        this.message = message;
-    }       
-
-    public Long getSecondTypeExceptionId() {
-        return secondTypeExceptionId;
+    
+    public SecondTypeException(RoomType oldRoomType, Reservation reservation) {
+        this.oldRoomType = oldRoomType;
+        this.reservation = reservation;
     }
 
-    public void setSecondTypeExceptionId(Long secondTypeExceptionId) {
-        this.secondTypeExceptionId = secondTypeExceptionId;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (secondTypeExceptionId != null ? secondTypeExceptionId.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the secondTypeExceptionId fields are not set
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof SecondTypeException)) {
             return false;
         }
         SecondTypeException other = (SecondTypeException) object;
-        if ((this.secondTypeExceptionId == null && other.secondTypeExceptionId != null) || (this.secondTypeExceptionId != null && !this.secondTypeExceptionId.equals(other.secondTypeExceptionId))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -63,21 +73,7 @@ public class SecondTypeException implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.SecondTypeException[ id=" + secondTypeExceptionId + " ]";
-    }
-
-    /**
-     * @return the message
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * @param message the message to set
-     */
-    public void setMessage(String message) {
-        this.message = message;
+        return "" + reservation.getId() + ": 1 " +this.oldRoomType.getName() + " is unavailable for check in and upgrade.";
     }
     
 }

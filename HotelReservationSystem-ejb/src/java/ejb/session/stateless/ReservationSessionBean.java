@@ -109,6 +109,19 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             throw new RegisteredGuestNotFoundException("Registered Guest ID " + registeredGuestId + " does not exist!");
         }
     }
+    
+    public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException{
+        Reservation reservation = em.find(Reservation.class, reservationId);
+        
+        if(reservation == null){
+            throw new ReservationNotFoundException();
+        } 
+        
+        reservation.getRooms().size();
+        reservation.getAllocationExceptions().size();
+        
+        return reservation;  
+    }
 
     public Double calculatePrice(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType, Integer numOfRooms) {
 

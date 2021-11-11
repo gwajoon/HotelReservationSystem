@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import java.util.Date;
 import javax.ejb.Remote;
 
 /**
@@ -13,5 +14,9 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface AllocationSessionBeanRemote {
+
+    public void allocateRoomToCurrentDayReservations(Date date);
+
+    public void allocateCurrentDay(Long reservationId, Date date);
     
 }
