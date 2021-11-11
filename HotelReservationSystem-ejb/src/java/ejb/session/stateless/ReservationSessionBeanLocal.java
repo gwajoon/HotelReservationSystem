@@ -22,7 +22,7 @@ import util.exception.UnknownPersistenceException;
 @Local
 public interface ReservationSessionBeanLocal {
 
-    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException;
+   public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException;
 
     public Double calculatePrice(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType, Integer numOfRooms);
 
@@ -33,6 +33,10 @@ public interface ReservationSessionBeanLocal {
     public List<RoomRate> getRoomRates(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType);
 
     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
-    
+
+    public Long createNewPartnerReservation(Reservation reservation, Long roomTypeId, Long partnerId) throws UnknownPersistenceException;
+
     public List<Reservation> viewAllPartnerReservations(Long partnerId) throws PartnerNotFoundException;
+
+    public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException;
 }

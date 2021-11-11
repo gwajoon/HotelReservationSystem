@@ -85,6 +85,11 @@ public class ReservationWebService {
         return reservationSessionBeanLocal.createNewOnlineReservation(reservation, roomTypeId, guestId);
     }
 
+    @WebMethod(operationName = "createNewPartnerReservation")
+    public Long createNewPartnerReservation(@WebParam(name = "reservation") Reservation reservation, @WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "guestId") Long guestId) throws UnknownPersistenceException {
+        return reservationSessionBeanLocal.createNewPartnerReservation(reservation, roomTypeId, guestId);
+    }
+    
     @WebMethod(operationName = "getAvailableRoomTypes")
     public List<RoomType> getAvailableRoomTypes(@WebParam(name = "checkInDate") Date checkInDate, @WebParam(name = "checkOutDate") Date checkOutDate, @WebParam(name = "numOfRooms") Integer numOfRooms) {
         List<RoomType> roomTypes = roomInventorySessionBeanLocal.getAvailableRoomTypes(checkInDate, checkOutDate, numOfRooms);
@@ -104,12 +109,6 @@ public class ReservationWebService {
     @WebMethod(operationName = "partnerLogin")
     public Partner partnerLogin(@WebParam(name = "email") String email, @WebParam(name = "password") String password) throws InvalidLoginCredentialException {
         Partner partner = partnerSessionBeanLocal.partnerLogin(email, password);
-        
-        for (Reservation r : partner.getReservations()) {
-            em.detach(r);
-            r.setPartner(null);
-        }
-        
         return partner;
     }
 

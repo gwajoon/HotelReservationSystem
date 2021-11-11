@@ -141,8 +141,6 @@ public class MainApp {
         int response = 0;
         doSearchHotelRoom();
 
-        System.out.print("Choose room based on number > ");
-        int roomId = scanner.nextInt();
     }
 
     public void doCreateNewPartner() {
@@ -261,7 +259,7 @@ public class MainApp {
 
             try {
                 ReservationWebService_Service service = new ReservationWebService_Service();
-                Long reservationId = service.getReservationWebServicePort().createNewOnlineReservation(reservation, roomTypeId, guestId);
+                Long reservationId = service.getReservationWebServicePort().createNewPartnerReservation(reservation, roomTypeId, guestId);
                 System.out.println("Reservation " + reservationId + " successfully made");
             } catch (UnknownPersistenceException_Exception ex) {
                 System.out.println(ex.getMessage());

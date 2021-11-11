@@ -100,6 +100,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
             reservation.setRoomType(roomType);
             reservation.setReservationType("Partner");
+            reservation.setGuest(partner);
             em.persist(reservation);
             em.flush();
             partner.getReservations().add(reservation);

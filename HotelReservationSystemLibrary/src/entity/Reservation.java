@@ -45,10 +45,6 @@ public class Reservation implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Guest guest;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private Partner partner;
 
     @ManyToOne(optional = false)
     private RoomType roomType;
@@ -113,14 +109,6 @@ public class Reservation implements Serializable {
 
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
-    }
-
-    public Partner getPartner() {
-        return partner;
-    }
-
-    public void setPartner(Partner partner) {
-        this.partner = partner;
     }
 
     @Override
