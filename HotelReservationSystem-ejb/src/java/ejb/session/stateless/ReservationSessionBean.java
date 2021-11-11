@@ -142,6 +142,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         } else {
             throw new PartnerNotFoundException("Partner ID " + partnerId + " does not exist!");
         }
+    }
+    
     public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException{
         Reservation reservation = em.find(Reservation.class, reservationId);
         
