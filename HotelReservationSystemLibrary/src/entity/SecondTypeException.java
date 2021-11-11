@@ -24,6 +24,7 @@ import javax.persistence.ManyToOne;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class SecondTypeException implements Serializable {
 
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +55,7 @@ public class SecondTypeException implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (getId() != null ? getId().hashCode() : 0);
         return hash;
     }
 
@@ -65,15 +66,43 @@ public class SecondTypeException implements Serializable {
             return false;
         }
         SecondTypeException other = (SecondTypeException) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
     }
+    
+        /**
+     * @return the oldRoomType
+     */
+    public RoomType getOldRoomType() {
+        return oldRoomType;
+    }
+
+    /**
+     * @param oldRoomType the oldRoomType to set
+     */
+    public void setOldRoomType(RoomType oldRoomType) {
+        this.oldRoomType = oldRoomType;
+    }
+
+    /**
+     * @return the reservation
+     */
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    /**
+     * @param reservation the reservation to set
+     */
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
 
     @Override
     public String toString() {
-        return "" + reservation.getId() + ": 1 " +this.oldRoomType.getName() + " is unavailable for check in and upgrade.";
+        return "" + getReservation().getId() + ": 1 " +this.getOldRoomType().getName() + " is unavailable for check in and upgrade.";
     }
     
 }

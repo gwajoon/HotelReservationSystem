@@ -25,30 +25,34 @@ public class FirstTypeException extends SecondTypeException implements Serializa
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private RoomType newRoomType;
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    private Room newRoom;
 
     public FirstTypeException() {
     }
     
 
-    public FirstTypeException(RoomType oldRoomType, RoomType newRoomType, Reservation reservation) {
+    public FirstTypeException(RoomType oldRoomType, RoomType newRoomType, Reservation reservation, Room room) {
         super(oldRoomType, reservation);
         this.newRoomType = newRoomType;
+        this.newRoom = room;
     }
     
     
 
     public Long getId() {
-        return id;
+        return getId();
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.setId(id);
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (getId() != null ? getId().hashCode() : 0);
         return hash;
     }
 
@@ -59,7 +63,7 @@ public class FirstTypeException extends SecondTypeException implements Serializa
             return false;
         }
         FirstTypeException other = (FirstTypeException) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -67,7 +71,7 @@ public class FirstTypeException extends SecondTypeException implements Serializa
 
     @Override
     public String toString() {
-        return "1 " + this.oldRoomType.getName() + " has been upgraded to " + this.newRoomType.getName();
+        return "1 " + this.getOldRoomType().getName() + " has been upgraded to " + this.newRoomType.getName();
     }
 
 
@@ -76,14 +80,14 @@ public class FirstTypeException extends SecondTypeException implements Serializa
      * @return the oldRoomType
      */
     public RoomType getOldRoomType() {
-        return oldRoomType;
+        return getOldRoomType();
     }
 
     /**
      * @param oldRoomType the oldRoomType to set
      */
     public void setOldRoomType(RoomType oldRoomType) {
-        this.oldRoomType = oldRoomType;
+        this.setOldRoomType(oldRoomType);
     }
 
     /**
@@ -104,14 +108,28 @@ public class FirstTypeException extends SecondTypeException implements Serializa
      * @return the reservation
      */
     public Reservation getReservation() {
-        return reservation;
+        return getReservation();
     }
 
     /**
      * @param reservation the reservation to set
      */
     public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
+        this.setReservation(reservation);
+    }
+
+    /**
+     * @return the newRoom
+     */
+    public Room getNewRoom() {
+        return newRoom;
+    }
+
+    /**
+     * @param newRoom the newRoom to set
+     */
+    public void setNewRoom(Room newRoom) {
+        this.newRoom = newRoom;
     }
     
 }

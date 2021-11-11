@@ -5,6 +5,7 @@
  */
 package horsreservationclient;
 
+import ejb.session.stateless.AllocationSessionBeanRemote;
 import ejb.session.stateless.RegisteredGuestSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomInventorySessionBeanRemote;
@@ -16,6 +17,7 @@ import util.exception.InvalidLoginCredentialException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,14 +37,17 @@ public class MainApp {
     private RoomInventorySessionBeanRemote roomInventorySessionBeanRemote;
     private RegisteredGuest currentGuest;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
+    private AllocationSessionBeanRemote allocationSessionBeanRemote;
 
     public MainApp() {
     }
 
-    public MainApp(RegisteredGuestSessionBeanRemote registeredGuestSessionBeanRemote, RoomInventorySessionBeanRemote roomInventorySessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote) {
+    public MainApp(RegisteredGuestSessionBeanRemote registeredGuestSessionBeanRemote, RoomInventorySessionBeanRemote roomInventorySessionBeanRemote,
+            ReservationSessionBeanRemote reservationSessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
         this.registeredGuestSessionBeanRemote = registeredGuestSessionBeanRemote;
         this.roomInventorySessionBeanRemote = roomInventorySessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
+        this.allocationSessionBeanRemote = allocationSessionBeanRemote;
     }
 
     public void runApp() {
@@ -184,16 +189,11 @@ public class MainApp {
             checkOutDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
 
         } catch (ParseException ex) {
-            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Invalid Check In or Check Out Date!");
+            return;
+
         }
 
-//        LocalDateTime newCheckInDate = new java.sql.Timestamp(
-//                checkInDate.getTime()).toLocalDateTime();
-//        newCheckInDate.plusHours(14);
-//
-//        LocalDateTime newCheckOutDate = new java.sql.Timestamp(
-//                checkInDate.getTime()).toLocalDateTime();
-//        newCheckOutDate.plusHours(12);
         List<RoomType> availableRoomTypes = roomInventorySessionBeanRemote.getAvailableRoomTypes(checkInDate, checkOutDate, numOfRooms);
 
         if (availableRoomTypes.size() > 0) {
@@ -239,6 +239,10 @@ public class MainApp {
         try {
             Long reservationId = reservationSessionBeanRemote.createNewOnlineReservation(reservation, roomTypeId, guestId);
             System.out.println("Reservation " + reservationId + " successfully made");
+            if (doCheckIfSameDay(checkInDate, new Date())) {
+                System.out.println("allocating now");
+                allocationSessionBeanRemote.allocateCurrentDay(reservationId, checkInDate);
+            }
         } catch (UnknownPersistenceException ex) {
             System.out.println(ex.getMessage());
         }
@@ -254,7 +258,11 @@ public class MainApp {
 
         try {
             reservation = reservationSessionBeanRemote.viewReservation(reservationId);
-            System.out.println(reservation.toString());
+            if (reservation.getGuest().getId().equals(currentGuest.getId())) {               
+                System.out.println(reservation.toString());
+            } else {
+                System.out.println("Reservation " + reservationId + " does not belong to you");
+            }
 
         } catch (ReservationNotFoundException ex) {
             System.out.println("Reservation " + reservationId + " not found");
@@ -273,6 +281,20 @@ public class MainApp {
         } catch (RegisteredGuestNotFoundException ex) {
             System.out.println("Registered Guest " + this.currentGuest.getId() + " not found");
         }
+    }
+
+    public boolean doCheckIfSameDay(Date checkInDate, Date currentDate) {
+        LocalDateTime newCheckInDate = checkInDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        LocalDateTime newCurrentDate = currentDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        return newCheckInDate.getDayOfYear() == newCurrentDate.getDayOfYear() && newCheckInDate.getYear() == newCurrentDate.getYear()
+                && newCurrentDate.getHour() >= 2;
+
     }
 
 }

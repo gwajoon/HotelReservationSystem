@@ -33,4 +33,6 @@ public interface ReservationSessionBeanRemote {
 
     public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException;
 
+    public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException;
+
 }
