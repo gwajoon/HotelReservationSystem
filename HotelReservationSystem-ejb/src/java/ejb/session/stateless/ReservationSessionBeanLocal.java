@@ -10,6 +10,7 @@ import entity.RoomRate;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.PartnerNotFoundException;
 import util.exception.RegisteredGuestNotFoundException;
 import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -32,4 +33,6 @@ public interface ReservationSessionBeanLocal {
     public List<RoomRate> getRoomRates(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType);
 
     public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
+    
+    public List<Reservation> viewAllPartnerReservations(Long partnerId) throws PartnerNotFoundException;
 }

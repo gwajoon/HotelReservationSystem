@@ -70,6 +70,11 @@ public class ReservationWebService {
         return reservationSessionBeanLocal.viewAllReservations(registeredGuestId);
     }
 
+    @WebMethod(operationName = "viewAllPartnerReservations")
+    public List<Reservation> viewAllPartnerReservations(@WebParam(name = "partnerId") Long partnerId) throws PartnerNotFoundException {
+        return reservationSessionBeanLocal.viewAllPartnerReservations(partnerId);
+    }
+    
     @WebMethod(operationName = "getRoomRates")
     public List<RoomRate> getRoomRates(@WebParam(name = "checkInDate") Date checkInDate, @WebParam(name = "checkOutDate") Date checkOutDate, @WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "reservationType") String reservationType) {
         return reservationSessionBeanLocal.getRoomRates(checkInDate, checkOutDate, roomTypeId, reservationType);
@@ -124,4 +129,5 @@ public class ReservationWebService {
     
     }
 
+    
 }

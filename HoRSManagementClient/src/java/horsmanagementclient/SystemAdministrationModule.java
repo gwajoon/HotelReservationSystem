@@ -200,7 +200,7 @@ public class SystemAdministrationModule {
         
         for (Partner p : partners)
         {
-            System.out.printf("Partner id: %s, first name: %s, last name: %s, email: %s\n", p.getPartnerId(), p.getFirstName(), p.getLastName(), p.getEmail());
+            System.out.printf("Partner id: %s, first name: %s, last name: %s, email: %s\n", p.getId(), p.getFirstName(), p.getLastName(), p.getEmail());
         }
     }
 }

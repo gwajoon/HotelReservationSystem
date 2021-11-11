@@ -88,6 +88,12 @@
 <message name="createNewWalkInReservationResponse">
 <part name="parameters" element="tns:createNewWalkInReservationResponse"/>
 </message>
+<message name="viewAllPartnerReservations">
+<part name="parameters" element="tns:viewAllPartnerReservations"/>
+</message>
+<message name="viewAllPartnerReservationsResponse">
+<part name="parameters" element="tns:viewAllPartnerReservationsResponse"/>
+</message>
 <portType name="ReservationWebService">
 <operation name="partnerLogin">
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
@@ -140,6 +146,11 @@
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservationRequest" message="tns:createNewWalkInReservation"/>
 <output wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservationResponse" message="tns:createNewWalkInReservationResponse"/>
 <fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservation/Fault/UnknownPersistenceException"/>
+</operation>
+<operation name="viewAllPartnerReservations">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllPartnerReservationsRequest" message="tns:viewAllPartnerReservations"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllPartnerReservationsResponse" message="tns:viewAllPartnerReservationsResponse"/>
+<fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllPartnerReservations/Fault/PartnerNotFoundException"/>
 </operation>
 </portType>
 <binding name="ReservationWebServicePortBinding" type="tns:ReservationWebService">
@@ -265,6 +276,18 @@
 </output>
 <fault name="UnknownPersistenceException">
 <soap:fault name="UnknownPersistenceException" use="literal"/>
+</fault>
+</operation>
+<operation name="viewAllPartnerReservations">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="PartnerNotFoundException">
+<soap:fault name="PartnerNotFoundException" use="literal"/>
 </fault>
 </operation>
 </binding>

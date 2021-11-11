@@ -19,7 +19,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import ws.client.InvalidLoginCredentialException_Exception;
 import ws.client.Partner;
 import ws.client.PartnerEmailExistException_Exception;
-import ws.client.RegisteredGuestNotFoundException_Exception;
+import ws.client.PartnerNotFoundException_Exception;
 import ws.client.ReservationNotFoundException_Exception;
 import ws.client.ReservationWebService;
 import ws.client.ReservationWebService_Service;
@@ -30,9 +30,10 @@ import ws.client.UnknownPersistenceException_Exception;
  * @author GuoJun
  */
 public class MainApp {
+
     private ReservationWebService port;
     private Partner currentPartner;
-    
+
     public MainApp() {
     }
 
@@ -105,8 +106,8 @@ public class MainApp {
         while (true) {
             System.out.println("*** Holiday Reservation System :: Reservation :: Registered Partner ***\n");
             System.out.println("1: Reserve Hotel Room");
-            System.out.println("2. View Partner Reservation Details");
-            System.out.println("3. View All Partner Reservations");
+            System.out.println("2. View My Reservation Details");
+            System.out.println("3. View All My Reservations");
 
             response = 0;
 
@@ -118,7 +119,9 @@ public class MainApp {
                 if (response == 1) {
                     doReserveRoom();
                 } else if (response == 2) {
+                    doViewMyReservation();
                 } else if (response == 3) {
+                    doViewAllMyReservations();
                 } else if (response == 4) {
                     break;
                 } else {
@@ -200,7 +203,7 @@ public class MainApp {
             XMLGregorianCalendar checkInDateXML = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
             c.setTime(checkOutDate);
             XMLGregorianCalendar checkOutDateXML = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            
+
             List<ws.client.RoomType> availableRoomTypes = port.getAvailableRoomTypes(checkInDateXML, checkOutDateXML, numOfRooms);
 
             if (availableRoomTypes.size() > 0) {
@@ -229,8 +232,8 @@ public class MainApp {
                     }
                     int selection = scanner.nextInt();
 
-                    if (currentPartner.getPartnerId() != null) {
-                        doReserveHotelRoom(availableRoomTypes.get(selection - 1).getId(), checkInDate, checkOutDate, numOfRooms, currentPartner.getPartnerId());
+                    if (currentPartner.getId() != null) {
+                        doReserveHotelRoom(availableRoomTypes.get(selection - 1).getId(), checkInDate, checkOutDate, numOfRooms, currentPartner.getId());
                     }
                 }
             }
@@ -287,16 +290,15 @@ public class MainApp {
     }
 
     public void doViewAllMyReservations() {
-            try {
-                List<ws.client.Reservation> reservations = port.viewAllReservations(this.currentPartner.getPartnerId());
+        try {
+            List<ws.client.Reservation> reservations = port.viewAllPartnerReservations(this.currentPartner.getId());
 
-                for (ws.client.Reservation reservation : reservations) {
-                    System.out.println(reservation.toString());
-                }
-            } 
-            catch (RegisteredGuestNotFoundException_Exception ex) {
-                System.out.println(ex.getMessage());
+            for (ws.client.Reservation reservation : reservations) {
+                System.out.println(reservation.toString());
             }
-        
+        } catch (PartnerNotFoundException_Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
     }
 }

@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Guest;
+import entity.Partner;
 import entity.RegisteredGuest;
 import entity.Reservation;
 import entity.RoomRate;
@@ -23,6 +24,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.enumeration.RateType;
+import util.exception.PartnerNotFoundException;
 import util.exception.RegisteredGuestNotFoundException;
 import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -88,6 +90,27 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         }
     }
+    
+    public Long createNewPartnerReservation(Reservation reservation, Long roomTypeId, Long partnerId) throws UnknownPersistenceException {
+        try {
+            RoomType roomType = em.find(RoomType.class, roomTypeId);
+            Partner partner = em.find(Partner.class, partnerId);
+
+            reservation.setRoomType(roomType);
+            reservation.setPartner(partner);
+            reservation.setGuest(null);
+            reservation.setReservationType("Partner");
+            em.persist(reservation);
+            em.flush();
+            partner.getReservations().add(reservation);
+            return reservation.getId();
+
+        } catch (PersistenceException ex) {
+
+            throw new UnknownPersistenceException(ex.getMessage());
+
+        }
+    }
 
     public Reservation viewReservation(Long reservationId) throws ReservationNotFoundException {
         Reservation reservation = em.find(Reservation.class, reservationId);
@@ -99,7 +122,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     }
 
-    public List<Reservation> viewAllReservations(Long registeredGuestId) throws RegisteredGuestNotFoundException {
+    public List<Reservation> viewAllReservations(Long registeredGuestId) throws RegisteredGuestNotFoundException{
         Guest guest = em.find(Guest.class, registeredGuestId);
 
         if (guest != null) {
@@ -107,6 +130,17 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             return guest.getReservations();
         } else {
             throw new RegisteredGuestNotFoundException("Registered Guest ID " + registeredGuestId + " does not exist!");
+        }
+    }
+    
+    public List<Reservation> viewAllPartnerReservations(Long partnerId) throws PartnerNotFoundException {
+        Partner partner = em.find(Partner.class, partnerId);
+
+        if (partner != null) {
+            partner.getReservations().size();
+            return partner.getReservations();
+        } else {
+            throw new PartnerNotFoundException("Partner ID " + partnerId + " does not exist!");
         }
     }
 

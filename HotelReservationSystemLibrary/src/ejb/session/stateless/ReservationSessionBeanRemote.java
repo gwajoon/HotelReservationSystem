@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.PartnerNotFoundException;
 import util.exception.RegisteredGuestNotFoundException;
 import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -32,5 +33,7 @@ public interface ReservationSessionBeanRemote {
     public Double calculatePrice(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType, Integer numOfRooms);
 
     public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException;
+    
+    public List<Reservation> viewAllPartnerReservations(Long partnerId) throws PartnerNotFoundException;
 
 }

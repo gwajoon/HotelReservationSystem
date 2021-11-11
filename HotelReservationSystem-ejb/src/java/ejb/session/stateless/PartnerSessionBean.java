@@ -81,7 +81,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
             em.persist(newPartner);
             em.flush();
 
-            return newPartner.getPartnerId();
+            return newPartner.getId();
         }
         
         catch(PersistenceException ex)

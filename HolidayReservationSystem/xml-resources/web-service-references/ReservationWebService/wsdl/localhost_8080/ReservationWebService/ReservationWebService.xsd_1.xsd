@@ -48,6 +48,10 @@
 
 <xs:element name="retrievePartnerByEmailResponse" type="tns:retrievePartnerByEmailResponse"/>
 
+<xs:element name="viewAllPartnerReservations" type="tns:viewAllPartnerReservations"/>
+
+<xs:element name="viewAllPartnerReservationsResponse" type="tns:viewAllPartnerReservationsResponse"/>
+
 <xs:element name="viewAllReservations" type="tns:viewAllReservations"/>
 
 <xs:element name="viewAllReservationsResponse" type="tns:viewAllReservationsResponse"/>
@@ -89,14 +93,14 @@
 </xs:complexType>
 
 <xs:complexType name="partner">
+<xs:complexContent>
+<xs:extension base="tns:guest">
 <xs:sequence>
-<xs:element name="email" type="xs:string" minOccurs="0"/>
-<xs:element name="firstName" type="xs:string" minOccurs="0"/>
-<xs:element name="lastName" type="xs:string" minOccurs="0"/>
-<xs:element name="partnerId" type="xs:long" minOccurs="0"/>
 <xs:element name="password" type="xs:string" minOccurs="0"/>
 <xs:element name="reservations" type="tns:reservation" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
+</xs:extension>
+</xs:complexContent>
 </xs:complexType>
 
 <xs:complexType name="roomRate">
@@ -211,6 +215,18 @@
 <xs:complexType name="RegisteredGuestNotFoundException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAllPartnerReservations">
+<xs:sequence>
+<xs:element name="partnerId" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAllPartnerReservationsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:reservation" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
