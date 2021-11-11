@@ -5,6 +5,7 @@
  */
 package horsmanagementclient;
 
+import ejb.session.stateless.AllocationSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomInventorySessionBeanRemote;
 import entity.Employee;
@@ -12,6 +13,8 @@ import entity.Reservation;
 import entity.RoomType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -28,11 +31,13 @@ public class FrontOfficeModule {
     private Employee currentEmployee;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
     private RoomInventorySessionBeanRemote roomInventorySessionBeanRemote;
+    private AllocationSessionBeanRemote allocationSessionBeanRemote;
 
     public FrontOfficeModule(ReservationSessionBeanRemote reservationSessionBeanRemote,
-            RoomInventorySessionBeanRemote roomInventorySessionBeanRemote) {
+            RoomInventorySessionBeanRemote roomInventorySessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
         this.roomInventorySessionBeanRemote = roomInventorySessionBeanRemote;
+        this.allocationSessionBeanRemote = allocationSessionBeanRemote;
     }
 
     public void frontOfficeMenu() {
@@ -140,11 +145,17 @@ public class FrontOfficeModule {
         reservation.setCheckInDate(checkInDate);
         reservation.setCheckOutDate(checkOutDate);
         reservation.setNumberOfRooms(numOfRooms);
-        reservation.setReservationType("Online");
+        reservation.setReservationType("Walk-In");
 
         try {
             Long reservationId = reservationSessionBeanRemote.createNewWalkInReservation(reservation, roomTypeId, firstName, lastName, email);
             System.out.println("Reservation " + reservationId + " successfully made");
+
+            if (doCheckIfSameDay(checkInDate, new Date())) {
+                System.out.println("allocating now");
+                allocationSessionBeanRemote.allocateCurrentDay(reservationId, checkInDate);
+            }
+
         } catch (UnknownPersistenceException ex) {
             System.out.println(ex.getMessage());
         }
@@ -156,12 +167,28 @@ public class FrontOfficeModule {
 
         System.out.println("*** Hotel Front Office Module :: Check In Guest ***\n");
 
-        System.out.print("Enter guest username > ");
-        String guestUsername = scanner.nextLine();
+        System.out.print("Enter guest email > ");
+        String email = scanner.nextLine();
+        System.out.print("Enter reservation id > ");
+        Long reservationId = scanner.nextLong();
 
     }
 
     public void checkOutGuest() {
+
+    }
+
+    public boolean doCheckIfSameDay(Date checkInDate, Date currentDate) {
+        LocalDateTime newCheckInDate = checkInDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        LocalDateTime newCurrentDate = currentDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        return newCheckInDate.getDayOfYear() == newCurrentDate.getDayOfYear() && newCheckInDate.getYear() == newCurrentDate.getYear()
+                && newCurrentDate.getHour() >= 2;
 
     }
 }

@@ -58,6 +58,9 @@ public class Reservation implements Serializable {
 
     @OneToMany
     private List<RoomRate> roomRates;
+    
+    @OneToMany(mappedBy = "reservation")
+    private List<SecondTypeException> allocationExceptions;
 
     public Reservation() {
         this.rooms = new ArrayList<Room>();
@@ -201,6 +204,20 @@ public class Reservation implements Serializable {
      */
     public void setReservationType(String reservationType) {
         this.reservationType = reservationType;
+    }
+
+    /**
+     * @return the allocationExceptions
+     */
+    public List<SecondTypeException> getAllocationExceptions() {
+        return allocationExceptions;
+    }
+
+    /**
+     * @param allocationExceptions the allocationExceptions to set
+     */
+    public void setAllocationExceptions(List<SecondTypeException> allocationExceptions) {
+        this.allocationExceptions = allocationExceptions;
     }
 
 }
