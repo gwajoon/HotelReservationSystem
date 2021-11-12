@@ -4,20 +4,35 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/ReservationWebService/ReservationWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="createNewWalkInReservation">
-<part name="parameters" element="tns:createNewWalkInReservation"/>
-</message>
-<message name="createNewWalkInReservationResponse">
-<part name="parameters" element="tns:createNewWalkInReservationResponse"/>
-</message>
-<message name="UnknownPersistenceException">
-<part name="fault" element="tns:UnknownPersistenceException"/>
-</message>
 <message name="calculatePrice">
 <part name="parameters" element="tns:calculatePrice"/>
 </message>
 <message name="calculatePriceResponse">
 <part name="parameters" element="tns:calculatePriceResponse"/>
+</message>
+<message name="getRoomRates">
+<part name="parameters" element="tns:getRoomRates"/>
+</message>
+<message name="getRoomRatesResponse">
+<part name="parameters" element="tns:getRoomRatesResponse"/>
+</message>
+<message name="createNewOnlineReservation">
+<part name="parameters" element="tns:createNewOnlineReservation"/>
+</message>
+<message name="createNewOnlineReservationResponse">
+<part name="parameters" element="tns:createNewOnlineReservationResponse"/>
+</message>
+<message name="UnknownPersistenceException">
+<part name="fault" element="tns:UnknownPersistenceException"/>
+</message>
+<message name="viewAllReservations">
+<part name="parameters" element="tns:viewAllReservations"/>
+</message>
+<message name="viewAllReservationsResponse">
+<part name="parameters" element="tns:viewAllReservationsResponse"/>
+</message>
+<message name="RegisteredGuestNotFoundException">
+<part name="fault" element="tns:RegisteredGuestNotFoundException"/>
 </message>
 <message name="viewReservation">
 <part name="parameters" element="tns:viewReservation"/>
@@ -28,20 +43,26 @@
 <message name="ReservationNotFoundException">
 <part name="fault" element="tns:ReservationNotFoundException"/>
 </message>
-<message name="getAvailableRoomTypes">
-<part name="parameters" element="tns:getAvailableRoomTypes"/>
+<message name="createNewPartnerReservation">
+<part name="parameters" element="tns:createNewPartnerReservation"/>
 </message>
-<message name="getAvailableRoomTypesResponse">
-<part name="parameters" element="tns:getAvailableRoomTypesResponse"/>
+<message name="createNewPartnerReservationResponse">
+<part name="parameters" element="tns:createNewPartnerReservationResponse"/>
 </message>
-<message name="retrievePartnerByEmail">
-<part name="parameters" element="tns:retrievePartnerByEmail"/>
+<message name="viewAllPartnerReservations">
+<part name="parameters" element="tns:viewAllPartnerReservations"/>
 </message>
-<message name="retrievePartnerByEmailResponse">
-<part name="parameters" element="tns:retrievePartnerByEmailResponse"/>
+<message name="viewAllPartnerReservationsResponse">
+<part name="parameters" element="tns:viewAllPartnerReservationsResponse"/>
 </message>
 <message name="PartnerNotFoundException">
 <part name="fault" element="tns:PartnerNotFoundException"/>
+</message>
+<message name="createNewWalkInReservation">
+<part name="parameters" element="tns:createNewWalkInReservation"/>
+</message>
+<message name="createNewWalkInReservationResponse">
+<part name="parameters" element="tns:createNewWalkInReservationResponse"/>
 </message>
 <message name="partnerLogin">
 <part name="parameters" element="tns:partnerLogin"/>
@@ -51,6 +72,12 @@
 </message>
 <message name="InvalidLoginCredentialException">
 <part name="fault" element="tns:InvalidLoginCredentialException"/>
+</message>
+<message name="retrievePartnerByEmail">
+<part name="parameters" element="tns:retrievePartnerByEmail"/>
+</message>
+<message name="retrievePartnerByEmailResponse">
+<part name="parameters" element="tns:retrievePartnerByEmailResponse"/>
 </message>
 <message name="createNewPartner">
 <part name="parameters" element="tns:createNewPartner"/>
@@ -67,82 +94,16 @@
 <message name="retrieveAllPartnersResponse">
 <part name="parameters" element="tns:retrieveAllPartnersResponse"/>
 </message>
-<message name="viewAllReservations">
-<part name="parameters" element="tns:viewAllReservations"/>
+<message name="getAvailableRoomTypes">
+<part name="parameters" element="tns:getAvailableRoomTypes"/>
 </message>
-<message name="viewAllReservationsResponse">
-<part name="parameters" element="tns:viewAllReservationsResponse"/>
-</message>
-<message name="RegisteredGuestNotFoundException">
-<part name="fault" element="tns:RegisteredGuestNotFoundException"/>
-</message>
-<message name="getRoomRates">
-<part name="parameters" element="tns:getRoomRates"/>
-</message>
-<message name="getRoomRatesResponse">
-<part name="parameters" element="tns:getRoomRatesResponse"/>
-</message>
-<message name="createNewOnlineReservation">
-<part name="parameters" element="tns:createNewOnlineReservation"/>
-</message>
-<message name="createNewOnlineReservationResponse">
-<part name="parameters" element="tns:createNewOnlineReservationResponse"/>
-</message>
-<message name="createNewPartnerReservation">
-<part name="parameters" element="tns:createNewPartnerReservation"/>
-</message>
-<message name="createNewPartnerReservationResponse">
-<part name="parameters" element="tns:createNewPartnerReservationResponse"/>
-</message>
-<message name="viewAllPartnerReservations">
-<part name="parameters" element="tns:viewAllPartnerReservations"/>
-</message>
-<message name="viewAllPartnerReservationsResponse">
-<part name="parameters" element="tns:viewAllPartnerReservationsResponse"/>
+<message name="getAvailableRoomTypesResponse">
+<part name="parameters" element="tns:getAvailableRoomTypesResponse"/>
 </message>
 <portType name="ReservationWebService">
-<operation name="createNewWalkInReservation">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservationRequest" message="tns:createNewWalkInReservation"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservationResponse" message="tns:createNewWalkInReservationResponse"/>
-<fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservation/Fault/UnknownPersistenceException"/>
-</operation>
 <operation name="calculatePrice">
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/calculatePriceRequest" message="tns:calculatePrice"/>
 <output wsam:Action="http://ws.session.ejb/ReservationWebService/calculatePriceResponse" message="tns:calculatePriceResponse"/>
-</operation>
-<operation name="viewReservation">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/viewReservationRequest" message="tns:viewReservation"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/viewReservationResponse" message="tns:viewReservationResponse"/>
-<fault message="tns:ReservationNotFoundException" name="ReservationNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/viewReservation/Fault/ReservationNotFoundException"/>
-</operation>
-<operation name="getAvailableRoomTypes">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/getAvailableRoomTypesRequest" message="tns:getAvailableRoomTypes"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/getAvailableRoomTypesResponse" message="tns:getAvailableRoomTypesResponse"/>
-</operation>
-<operation name="retrievePartnerByEmail">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/retrievePartnerByEmailRequest" message="tns:retrievePartnerByEmail"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/retrievePartnerByEmailResponse" message="tns:retrievePartnerByEmailResponse"/>
-<fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/retrievePartnerByEmail/Fault/PartnerNotFoundException"/>
-</operation>
-<operation name="partnerLogin">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
-<fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/ReservationWebService/partnerLogin/Fault/InvalidLoginCredentialException"/>
-</operation>
-<operation name="createNewPartner">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartnerRequest" message="tns:createNewPartner"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartnerResponse" message="tns:createNewPartnerResponse"/>
-<fault message="tns:PartnerEmailExistException" name="PartnerEmailExistException" wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartner/Fault/PartnerEmailExistException"/>
-<fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartner/Fault/UnknownPersistenceException"/>
-</operation>
-<operation name="retrieveAllPartners">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/retrieveAllPartnersRequest" message="tns:retrieveAllPartners"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/retrieveAllPartnersResponse" message="tns:retrieveAllPartnersResponse"/>
-</operation>
-<operation name="viewAllReservations">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllReservationsRequest" message="tns:viewAllReservations"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllReservationsResponse" message="tns:viewAllReservationsResponse"/>
-<fault message="tns:RegisteredGuestNotFoundException" name="RegisteredGuestNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllReservations/Fault/RegisteredGuestNotFoundException"/>
 </operation>
 <operation name="getRoomRates">
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/getRoomRatesRequest" message="tns:getRoomRates"/>
@@ -152,6 +113,16 @@
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/createNewOnlineReservationRequest" message="tns:createNewOnlineReservation"/>
 <output wsam:Action="http://ws.session.ejb/ReservationWebService/createNewOnlineReservationResponse" message="tns:createNewOnlineReservationResponse"/>
 <fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/ReservationWebService/createNewOnlineReservation/Fault/UnknownPersistenceException"/>
+</operation>
+<operation name="viewAllReservations">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllReservationsRequest" message="tns:viewAllReservations"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllReservationsResponse" message="tns:viewAllReservationsResponse"/>
+<fault message="tns:RegisteredGuestNotFoundException" name="RegisteredGuestNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllReservations/Fault/RegisteredGuestNotFoundException"/>
+</operation>
+<operation name="viewReservation">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/viewReservationRequest" message="tns:viewReservation"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/viewReservationResponse" message="tns:viewReservationResponse"/>
+<fault message="tns:ReservationNotFoundException" name="ReservationNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/viewReservation/Fault/ReservationNotFoundException"/>
 </operation>
 <operation name="createNewPartnerReservation">
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartnerReservationRequest" message="tns:createNewPartnerReservation"/>
@@ -163,10 +134,57 @@
 <output wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllPartnerReservationsResponse" message="tns:viewAllPartnerReservationsResponse"/>
 <fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/viewAllPartnerReservations/Fault/PartnerNotFoundException"/>
 </operation>
+<operation name="createNewWalkInReservation">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservationRequest" message="tns:createNewWalkInReservation"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservationResponse" message="tns:createNewWalkInReservationResponse"/>
+<fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/ReservationWebService/createNewWalkInReservation/Fault/UnknownPersistenceException"/>
+</operation>
+<operation name="partnerLogin">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
+<fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/ReservationWebService/partnerLogin/Fault/InvalidLoginCredentialException"/>
+</operation>
+<operation name="retrievePartnerByEmail">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/retrievePartnerByEmailRequest" message="tns:retrievePartnerByEmail"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/retrievePartnerByEmailResponse" message="tns:retrievePartnerByEmailResponse"/>
+<fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/retrievePartnerByEmail/Fault/PartnerNotFoundException"/>
+</operation>
+<operation name="createNewPartner">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartnerRequest" message="tns:createNewPartner"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartnerResponse" message="tns:createNewPartnerResponse"/>
+<fault message="tns:PartnerEmailExistException" name="PartnerEmailExistException" wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartner/Fault/PartnerEmailExistException"/>
+<fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/ReservationWebService/createNewPartner/Fault/UnknownPersistenceException"/>
+</operation>
+<operation name="retrieveAllPartners">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/retrieveAllPartnersRequest" message="tns:retrieveAllPartners"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/retrieveAllPartnersResponse" message="tns:retrieveAllPartnersResponse"/>
+</operation>
+<operation name="getAvailableRoomTypes">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/getAvailableRoomTypesRequest" message="tns:getAvailableRoomTypes"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/getAvailableRoomTypesResponse" message="tns:getAvailableRoomTypesResponse"/>
+</operation>
 </portType>
 <binding name="ReservationWebServicePortBinding" type="tns:ReservationWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="createNewWalkInReservation">
+<operation name="calculatePrice">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="getRoomRates">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="createNewOnlineReservation">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -178,7 +196,7 @@
 <soap:fault name="UnknownPersistenceException" use="literal"/>
 </fault>
 </operation>
-<operation name="calculatePrice">
+<operation name="viewAllReservations">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -186,6 +204,9 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="RegisteredGuestNotFoundException">
+<soap:fault name="RegisteredGuestNotFoundException" use="literal"/>
+</fault>
 </operation>
 <operation name="viewReservation">
 <soap:operation soapAction=""/>
@@ -199,7 +220,7 @@
 <soap:fault name="ReservationNotFoundException" use="literal"/>
 </fault>
 </operation>
-<operation name="getAvailableRoomTypes">
+<operation name="createNewPartnerReservation">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -207,8 +228,11 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="UnknownPersistenceException">
+<soap:fault name="UnknownPersistenceException" use="literal"/>
+</fault>
 </operation>
-<operation name="retrievePartnerByEmail">
+<operation name="viewAllPartnerReservations">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -218,6 +242,18 @@
 </output>
 <fault name="PartnerNotFoundException">
 <soap:fault name="PartnerNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="createNewWalkInReservation">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="UnknownPersistenceException">
+<soap:fault name="UnknownPersistenceException" use="literal"/>
 </fault>
 </operation>
 <operation name="partnerLogin">
@@ -230,6 +266,18 @@
 </output>
 <fault name="InvalidLoginCredentialException">
 <soap:fault name="InvalidLoginCredentialException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrievePartnerByEmail">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="PartnerNotFoundException">
+<soap:fault name="PartnerNotFoundException" use="literal"/>
 </fault>
 </operation>
 <operation name="createNewPartner">
@@ -256,7 +304,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="viewAllReservations">
+<operation name="getAvailableRoomTypes">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -264,54 +312,6 @@
 <output>
 <soap:body use="literal"/>
 </output>
-<fault name="RegisteredGuestNotFoundException">
-<soap:fault name="RegisteredGuestNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="getRoomRates">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="createNewOnlineReservation">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="UnknownPersistenceException">
-<soap:fault name="UnknownPersistenceException" use="literal"/>
-</fault>
-</operation>
-<operation name="createNewPartnerReservation">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="UnknownPersistenceException">
-<soap:fault name="UnknownPersistenceException" use="literal"/>
-</fault>
-</operation>
-<operation name="viewAllPartnerReservations">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="PartnerNotFoundException">
-<soap:fault name="PartnerNotFoundException" use="literal"/>
-</fault>
 </operation>
 </binding>
 <service name="ReservationWebService">

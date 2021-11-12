@@ -74,7 +74,7 @@ public class DataInitSessionBean {
 
     public void initialiseData() {
         try {
-            partnerSessionBeanLocal.createNewPartner(new Partner("Hotel", "Trivago", "admin@hoteltrivago.com", "password"));
+            partnerSessionBeanLocal.createNewPartner(new Partner("Hotel", "Trivago", "partner", "password"));
             
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "sysadmin", "password", EmployeeType.SYSTEM_ADMIN));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "opmanager", "password", EmployeeType.OPERATION_MANAGER));

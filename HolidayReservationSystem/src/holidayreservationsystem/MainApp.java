@@ -279,7 +279,9 @@ public class MainApp {
 
         try {
             reservation = port.viewReservation(reservationId);
-            System.out.println(reservation.toString());
+            System.out.println("" + reservation.getReservationType() + " Reservation " + reservation.getId() + " from "
+                + reservation.getCheckInDate().toString() + " to " + reservation.getCheckOutDate().toString() + " for "
+                    + reservation.getNumberOfRooms() + " " + reservation.getRoomType().getName());
 
         } catch (ReservationNotFoundException_Exception ex) {
             System.out.println("Reservation " + reservationId + " not found");
@@ -289,10 +291,12 @@ public class MainApp {
 
     public void doViewAllMyReservations() {
         try {
-            List<ws.client.Reservation> reservations = port.viewAllPartnerReservations(this.currentPartner.getId());
+            List<ws.client.Reservation> reservations = port.viewAllPartnerReservations(currentPartner.getId());
 
             for (ws.client.Reservation reservation : reservations) {
-                System.out.println(reservation.toString());
+                System.out.println("" + reservation.getReservationType() + " Reservation " + reservation.getId() + " from "
+                + reservation.getCheckInDate().toString() + " to " + reservation.getCheckOutDate().toString() + " for "
+                    + reservation.getNumberOfRooms() + " " + reservation.getRoomType().getName() + "\n");
             }
         } catch (PartnerNotFoundException_Exception ex) {
             System.out.println(ex.getMessage());

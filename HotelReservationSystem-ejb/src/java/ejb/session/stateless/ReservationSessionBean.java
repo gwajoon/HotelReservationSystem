@@ -99,11 +99,11 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             Partner partner = em.find(Partner.class, partnerId);
 
             reservation.setRoomType(roomType);
-            reservation.setReservationType("Online");
             reservation.setGuest(partner);
+            reservation.setReservationType("Online");
             em.persist(reservation);
-            em.flush();
             partner.getReservations().add(reservation);
+            em.flush();
             return reservation.getId();
 
         } catch (PersistenceException ex) {

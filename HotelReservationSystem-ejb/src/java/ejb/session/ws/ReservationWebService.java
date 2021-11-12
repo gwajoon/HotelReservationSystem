@@ -62,7 +62,13 @@ public class ReservationWebService {
 
     @WebMethod(operationName = "viewReservation")
     public Reservation viewReservation(@WebParam(name = "reservationId") Long reservationId) throws ReservationNotFoundException {
-        return reservationSessionBeanLocal.viewReservation(reservationId);
+        Reservation reservation = reservationSessionBeanLocal.viewReservation(reservationId);
+        em.detach(reservation);
+        reservation.getGuest().setReservation(null);
+        reservation.getRoomType().setRooms(null);
+        reservation.getRoomType().setRoomRates(null);
+        
+        return reservation;
     }
 
     @WebMethod(operationName = "viewAllReservations")
@@ -72,7 +78,16 @@ public class ReservationWebService {
 
     @WebMethod(operationName = "viewAllPartnerReservations")
     public List<Reservation> viewAllPartnerReservations(@WebParam(name = "partnerId") Long partnerId) throws PartnerNotFoundException {
-        return reservationSessionBeanLocal.viewAllPartnerReservations(partnerId);
+        List<Reservation> reservations = reservationSessionBeanLocal.viewAllPartnerReservations(partnerId);
+        reservations.size();
+        for (Reservation r : reservations) {
+            em.detach(r);
+            r.setGuest(null);
+            r.getRoomType().setRooms(null);
+            r.getRoomType().setRoomRates(null);
+        }
+        
+        return reservations;
     }
     
     @WebMethod(operationName = "getRoomRates")
@@ -109,6 +124,8 @@ public class ReservationWebService {
     @WebMethod(operationName = "partnerLogin")
     public Partner partnerLogin(@WebParam(name = "email") String email, @WebParam(name = "password") String password) throws InvalidLoginCredentialException {
         Partner partner = partnerSessionBeanLocal.partnerLogin(email, password);
+        em.detach(partner);
+        partner.setReservations(null);
         return partner;
     }
 
