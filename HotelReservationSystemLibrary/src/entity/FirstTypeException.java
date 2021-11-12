@@ -80,7 +80,7 @@ public class FirstTypeException extends SecondTypeException implements Serializa
      * @return the oldRoomType
      */
     public RoomType getOldRoomType() {
-        return getOldRoomType();
+        return this.oldRoomType;
     }
 
     /**

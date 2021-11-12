@@ -56,7 +56,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
             List<Room> availableRooms = getAvailableRooms(roomType, date);
             Integer numOfRooms = reservation.getNumberOfRooms();
 
-            while (numOfRooms != 0 || rank != higherRank + 1) {
+            while (numOfRooms != 0) {
                 if (!availableRooms.isEmpty()) {
                     Room room = availableRooms.get(0);
                     RoomType allocatedRoomType = room.getRoomType();
@@ -84,6 +84,9 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                         break;
                     }
 
+                }
+                if(rank == higherRank + 1){
+                    break;
                 }
             }
 
@@ -138,7 +141,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
         List<Room> availableRooms = getAvailableRooms(roomType, date);
         Integer numOfRooms = reservation.getNumberOfRooms();
 
-        while (numOfRooms != 0 || rank == higherRank + 1) {
+        while (numOfRooms != 0) {
             if (!availableRooms.isEmpty()) {
                 Room room = availableRooms.get(0);
                 RoomType allocatedRoomType = room.getRoomType();
@@ -155,8 +158,9 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                 }
 
             } else {
+                rank++;
                 Query nextHigherRoomTypeQuery = em.createQuery("SELECT r FROM RoomType r WHERE r.priority = ?1");
-                nextHigherRoomTypeQuery.setParameter(1, higherRank);
+                nextHigherRoomTypeQuery.setParameter(1, rank);
                 try {
                     RoomType nextHigherRoomType = (RoomType) nextHigherRoomTypeQuery.getSingleResult();
                     availableRooms = getAvailableRooms(nextHigherRoomType, date);
@@ -166,6 +170,9 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                 }
 
             }
+            if(rank == higherRank + 1){
+                    break;
+                }
         }
     }
 
