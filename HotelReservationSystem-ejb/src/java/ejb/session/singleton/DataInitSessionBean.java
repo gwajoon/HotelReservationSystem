@@ -96,6 +96,7 @@ public class DataInitSessionBean {
             RoomRate juniorSuiteRate2 = new RoomRate("Junior Suite Normal", RateType.NORMAL, 200.0);
             RoomRate grandSuiteRate1 = new RoomRate("Grand Suite Published", RateType.PUBLISHED, 500.0);
             RoomRate grandSuiteRate2 = new RoomRate("Grand Suite Normal", RateType.NORMAL, 250.0);
+            
             try {
                 roomRateSessionBeanLocal.createNewRoomRate(deluxeRoomRate1, deluxeId);
                 roomRateSessionBeanLocal.createNewRoomRate(deluxeRoomRate2, deluxeId);

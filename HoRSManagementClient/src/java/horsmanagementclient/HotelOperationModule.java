@@ -5,6 +5,7 @@
  */
 package horsmanagementclient;
 
+import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import entity.Employee;
@@ -21,6 +22,7 @@ import util.exception.RoomTypeNameExistsException;
 import util.exception.UnknownPersistenceException;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Room;
+import entity.SecondTypeException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,10 +31,10 @@ import java.util.logging.Logger;
 import util.enumeration.RateType;
 import util.exception.DeleteRoomException;
 import util.exception.DeleteRoomTypeException;
+import util.exception.ReservationNotFoundException;
 import util.exception.RoomNotFoundException;
 import util.exception.RoomNumberExistException;
 import util.exception.RoomTypeNotFoundException;
-import util.exception.UpdateRoomException;
 import util.exception.UpdateRoomTypeException;
 
 /**
@@ -45,15 +47,17 @@ public class HotelOperationModule {
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     private Employee currentEmployee;
     private RoomSessionBeanRemote roomSessionBeanRemote;
-
+    private ReservationSessionBeanRemote reservationSessionBeanRemote;
+    
     public HotelOperationModule() {
     }
 
-    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, Employee employee, RoomSessionBeanRemote roomSessionBeanRemote) {
+    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, Employee employee, RoomSessionBeanRemote roomSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote) {
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         this.currentEmployee = employee;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
+        this.reservationSessionBeanRemote = reservationSessionBeanRemote;
     }
 
     public void hotelOperationMenu() {
@@ -87,6 +91,7 @@ public class HotelOperationModule {
                     } else if (response == 4) {
                         doViewRooms();
                     } else if (response == 5) {
+                        doViewAllocationExceptionReport();
                     } else if (response == 6) {
                         break;
                     }
@@ -169,10 +174,11 @@ public class HotelOperationModule {
         try {
             Long newRoomRateId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType, nextHigher);
             System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
+
         } catch (RoomTypeNameExistsException ex) {
-            System.out.println("An error has occurred while creating the new room rate!: The room rate name already exist\n");
+            System.out.println("An error has occurred while creating the new room type!: The room type name already exist\n");
         } catch (UnknownPersistenceException ex) {
-            System.out.println("An unknown error has occurred while creating the new room rate!: " + ex.getMessage() + "\n");
+            System.out.println("An unknown error has occurred while creating the new room type!: " + ex.getMessage() + "\n");
         }
     }
 
@@ -444,10 +450,10 @@ public class HotelOperationModule {
         String name = scanner.nextLine();
 
         System.out.print("Enter rate type > ");
-        System.out.print("1: " + RateType.values()[0]);
-        System.out.print("2: " + RateType.values()[1]);
-        System.out.print("3: " + RateType.values()[2]);
-        System.out.print("4: " + RateType.values()[3]);
+        System.out.print("1: " + RateType.values()[0] + "\n");
+        System.out.print("2: " + RateType.values()[1] + "\n");
+        System.out.print("3: " + RateType.values()[2] + "\n");
+        System.out.print("4: " + RateType.values()[3] + "\n");
         Integer selection = scanner.nextInt();
         RateType rateType = RateType.values()[selection - 1];
 
@@ -610,5 +616,24 @@ public class HotelOperationModule {
 
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
+    }
+    
+    public void doViewAllocationExceptionReport() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View Allocation Excetpion Report ***\n");
+        System.out.print("Enter ID of reservation to view > ");
+        Long reservationId = scanner.nextLong();
+        
+        try {
+            List<SecondTypeException> secondTypeExceptions = reservationSessionBeanRemote.viewAllocationExceptionReport(reservationId);
+            for (SecondTypeException ex : secondTypeExceptions) {
+                System.out.println(ex.toString());
+            }
+        }
+        catch (ReservationNotFoundException ex) { 
+            System.out.println("Reservation with Id: " + reservationId + " not found.");
+        }
+        
+        
     }
 }

@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Reservation;
 import entity.RoomRate;
+import entity.SecondTypeException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
@@ -39,4 +40,6 @@ public interface ReservationSessionBeanRemote {
     public List<Reservation> viewAllPartnerReservations(Long partnerId) throws PartnerNotFoundException;
 
     public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException;
+    
+    public List<SecondTypeException> viewAllocationExceptionReport(Long reservationId) throws ReservationNotFoundException;
 }
