@@ -90,27 +90,8 @@
 <xs:complexType name="secondTypeException">
 <xs:sequence>
 <xs:element name="id" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="guest">
-<xs:sequence>
-<xs:element name="email" type="xs:string" minOccurs="0"/>
-<xs:element name="firstName" type="xs:string" minOccurs="0"/>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="lastName" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="roomRate">
-<xs:sequence>
-<xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
-<xs:element name="endDate" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="name" type="xs:string" minOccurs="0"/>
-<xs:element name="ratePerNight" type="xs:double" minOccurs="0"/>
-<xs:element name="roomType" type="tns:roomType" minOccurs="0"/>
-<xs:element name="startDate" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="oldRoomType" type="tns:roomType" minOccurs="0"/>
+<xs:element name="reservation" type="tns:reservation" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -129,6 +110,18 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="roomRate">
+<xs:sequence>
+<xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
+<xs:element name="endDate" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+<xs:element name="ratePerNight" type="xs:double" minOccurs="0"/>
+<xs:element name="roomType" type="tns:roomType" minOccurs="0"/>
+<xs:element name="startDate" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="room">
 <xs:sequence>
 <xs:element name="id" type="xs:long" minOccurs="0"/>
@@ -136,6 +129,15 @@
 <xs:element name="roomNumber" type="xs:string" minOccurs="0"/>
 <xs:element name="roomStatus" type="xs:boolean" minOccurs="0"/>
 <xs:element name="roomType" type="tns:roomType" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="guest">
+<xs:sequence>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+<xs:element name="firstName" type="xs:string" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="lastName" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

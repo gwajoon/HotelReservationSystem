@@ -634,10 +634,11 @@ public class HotelOperationModule {
     public void doViewAllocationExceptionReport() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View Allocation Exception Report ***\n");
+        
 
         List<SecondTypeException> secondTypeExceptions = allocationSessionBeanRemote.viewAllocationExceptionReport();
         for (SecondTypeException ex : secondTypeExceptions) {
-            System.out.println(ex.toString());
+            System.out.println(ex);
         }
 
     }
