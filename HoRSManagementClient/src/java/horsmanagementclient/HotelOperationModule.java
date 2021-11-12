@@ -74,7 +74,7 @@ public class HotelOperationModule {
 
             if (currentEmployee.getEmployeeType() == OPERATION_MANAGER) {
                 System.out.println("1. Create New Room Type");
-                System.out.println("2. View Room Type Details");
+                System.out.println("2. View All Room Types");
                 System.out.println("3. Create New Room");
                 System.out.println("4. View All Rooms");
                 System.out.println("5. View Room Allocation Exception Report");
