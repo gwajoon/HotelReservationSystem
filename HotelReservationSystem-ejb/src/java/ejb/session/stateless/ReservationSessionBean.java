@@ -11,6 +11,7 @@ import entity.RegisteredGuest;
 import entity.Reservation;
 import entity.RoomRate;
 import entity.RoomType;
+import entity.SecondTypeException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -145,6 +146,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         } else {
             throw new PartnerNotFoundException("Partner ID " + partnerId + " does not exist!");
         }
+    }
+    
+    public List<SecondTypeException> viewAllocationExceptionReport(Long reservationId) throws ReservationNotFoundException {
+        Reservation reservation = em.find(Reservation.class, reservationId);
+        if(reservation == null){
+            throw new ReservationNotFoundException();
+        }
+        reservation.getAllocationExceptions().size();
+        
+        return reservation.getAllocationExceptions();
     }
 
     public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException{

@@ -9,8 +9,11 @@ import ejb.session.stateless.AllocationSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomInventorySessionBeanRemote;
 import entity.Employee;
+import entity.FirstTypeException;
 import entity.Reservation;
+import entity.Room;
 import entity.RoomType;
+import entity.SecondTypeException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -94,7 +98,8 @@ public class FrontOfficeModule {
             checkOutDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
 
         } catch (ParseException ex) {
-            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Invalid Check In or Check Out Date!");
+            return;
         }
 
         List<RoomType> availableRoomTypes = roomInventorySessionBeanRemote.getAvailableRoomTypes(checkInDate, checkOutDate, numOfRooms);
@@ -163,20 +168,39 @@ public class FrontOfficeModule {
 
     public void checkInGuest() {
         Scanner scanner = new Scanner(System.in);
-        int response;
-
+        
         System.out.println("*** Hotel Front Office Module :: Check In Guest ***\n");
 
-        System.out.print("Enter guest email > ");
-        String email = scanner.nextLine();
         System.out.print("Enter reservation id > ");
         Long reservationId = scanner.nextLong();
-        
-        System.out.println("Guest successfully checked in!");
+        try {
+            Reservation reservation = reservationSessionBeanRemote.checkInGuest(reservationId);
+            for (Room room : reservation.getRooms()) {
+                System.out.println("Reservation " + reservation.getId() + " : Your allocated " + room.getRoomType()
+                        + " number is " + room.getRoomNumber());
+            }
+            if (!reservation.getAllocationExceptions().isEmpty()) {
+                for (SecondTypeException secondTypeException : reservation.getAllocationExceptions()) {
+                    if (secondTypeException.getClass().equals(FirstTypeException.class)) {
+                        FirstTypeException firstTypeException = (FirstTypeException) secondTypeException;
+                        System.out.println("Reservation " + reservation.getId() + " : Your upgraded allocated "
+                                + firstTypeException.getNewRoomType() + " number is " + firstTypeException.getNewRoom().getRoomNumber());
+                    } else {
+                        System.out.println("Reservation " + reservation.getId() + " Insufficient room availability for " + secondTypeException.getOldRoomType());
+                    }
+                }
+            }
+        } catch (ReservationNotFoundException ex) {
+            System.out.println("Reservation " + reservationId + " not found");
+            
+            System.out.println("Successfully checked in guest");
+        }
+
 
     }
 
     public void checkOutGuest() {
+        System.out.println("Thank you for your visit");
 
     }
 

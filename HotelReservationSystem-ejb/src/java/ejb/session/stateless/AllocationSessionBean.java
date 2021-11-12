@@ -53,13 +53,13 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
         Query query1 = em.createQuery("SELECT r From RoomType r");
 
-        Integer highestRank = query1.getResultList().size();
+        
 
         for (Reservation reservation : list) {
             RoomType roomType = reservation.getRoomType();
             Integer rank = roomType.getPriority();
             Integer higherRank = rank + 1;
-            Integer initialRank = rank;
+            
             List<Room> availableRooms = getAvailableRooms(roomType, date);
             Integer numOfRooms = reservation.getNumberOfRooms();
 
@@ -73,7 +73,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                     numOfRooms--;
 
                     if (!allocatedRoomType.equals(roomType)) {
-                        FirstTypeException firstTypeException = new FirstTypeException(roomType, allocatedRoomType, reservation);
+                        FirstTypeException firstTypeException = new FirstTypeException(roomType, allocatedRoomType, reservation, room);
                         em.persist(firstTypeException);
                         em.flush();
                         reservation.getAllocationExceptions().add(firstTypeException);
@@ -152,7 +152,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                 numOfRooms--;
 
                 if (!allocatedRoomType.equals(roomType)) {
-                    FirstTypeException firstTypeException = new FirstTypeException(roomType, allocatedRoomType, reservation);
+                    FirstTypeException firstTypeException = new FirstTypeException(roomType, allocatedRoomType, reservation, room);
                     em.persist(firstTypeException);
                     em.flush();
                     reservation.getAllocationExceptions().add(firstTypeException);
