@@ -149,14 +149,25 @@ public class HotelOperationModule {
         System.out.print("Enter amenities > ");
         String amenities = scanner.nextLine().trim();
 
-        System.out.print("Enter priority > ");
-        int priority = scanner.nextInt();
+        System.out.print("Select priority: ");
+        List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
+        for(RoomType roomType: roomTypes){
+            System.out.println("" + roomType.getPriority() + " " + roomType.getName());
+        }
+        
+        System.out.print("Select room type that is next higher>  ");
+        System.out.print("If none, input 0 >  ");
+        int nextHigher = scanner.nextInt(); 
+        
+        if(nextHigher == 0){
+            nextHigher = roomTypes.size() + 1;
+        }
 
-        RoomType newRoomType = new RoomType(name, description, size, bed, capacity, amenities, priority);
+        RoomType newRoomType = new RoomType(name, description, size, bed, capacity, amenities, nextHigher);
         System.out.println(newRoomType.getName() + newRoomType.getDescription() + newRoomType.getSize() + newRoomType.getBed() + newRoomType.getCapacity() + newRoomType.getAmenities());
 
         try {
-            Long newRoomRateId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType);
+            Long newRoomRateId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType, nextHigher);
             System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
         } catch (RoomTypeNameExistsException ex) {
             System.out.println("An error has occurred while creating the new room rate!: The room rate name already exist\n");

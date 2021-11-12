@@ -31,7 +31,17 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     @PersistenceContext
     private EntityManager em;
 
-    public Long createNewRoomType(RoomType newRoomType) throws RoomTypeNameExistsException, UnknownPersistenceException {
+    public Long createNewRoomType(RoomType newRoomType, Integer nextHigher) throws RoomTypeNameExistsException, UnknownPersistenceException {
+        
+        List<RoomType> roomTypes = this.viewAllRoomTypes();
+        
+        for(RoomType roomType: roomTypes){
+            int priority = roomType.getPriority();
+            if(priority >= nextHigher){
+                roomType.setPriority(priority + 1);
+            }
+        }
+        
         try {
             em.persist(newRoomType);
             em.flush();

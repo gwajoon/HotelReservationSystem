@@ -81,11 +81,11 @@ public class DataInitSessionBean {
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "salesmanager", "password", EmployeeType.SALES_MANAGER));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "guestrelo", "password", EmployeeType.GUEST_RELATION));
 
-            Long deluxeId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Deluxe Room", "deluxe room", "Small", "Queen", "2", "drinks", 1));
-            Long premierId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Premier Room", "premier room", "Small", "Queen", "2", "drinks", 2));
-            Long familyId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Family Room", "family room", "Small", "Queen", "2", "drinks", 3));
-            Long juniorId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Junior Suite", "junior room", "Small", "Queen", "2", "drinks", 4));
-            Long grandId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Grand Suite", "grand room", "Small", "Queen", "2", "drinks", 5));
+            Long deluxeId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Deluxe Room", "deluxe room", "Small", "Queen", "2", "drinks", 1), 1);
+            Long premierId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Premier Room", "premier room", "Small", "Queen", "2", "drinks",2), 2);
+            Long familyId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Family Room", "family room", "Small", "Queen", "2", "drinks", 3), 3);
+            Long juniorId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Junior Suite", "junior room", "Small", "Queen", "2", "drinks", 4), 4);
+            Long grandId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Grand Suite", "grand room", "Small", "Queen", "2", "drinks", 5), 5);
 
          
 
