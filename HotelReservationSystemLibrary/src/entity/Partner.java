@@ -8,7 +8,10 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -18,7 +21,9 @@ import javax.persistence.Entity;
 public class Partner extends Guest implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+    @NotNull
+    @Size(min = 1, max = 32)
+    @Column(length = 32, nullable = false)
     private String password;
     private List<Reservation> reservations;
 

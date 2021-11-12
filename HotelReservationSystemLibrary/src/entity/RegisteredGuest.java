@@ -6,14 +6,10 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -23,7 +19,8 @@ import javax.persistence.OneToMany;
 public class RegisteredGuest extends Guest implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @NotNull
+    @Size(min = 1, max = 32)
     @Column(length = 32, nullable = false)
     private String password;
 

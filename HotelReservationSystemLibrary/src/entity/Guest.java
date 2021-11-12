@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -29,10 +31,16 @@ public class Guest implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
+    @NotNull
+    @Size(min = 1, max = 32)
     @Column(length = 32, nullable = false)
     protected String firstName;
+    @NotNull
+    @Size(min = 1, max = 32)
     @Column(length = 32, nullable = false)
     protected String lastName;
+    @NotNull
+    @Size(min = 1, max = 32)
     @Column(length = 32, nullable = false, unique = true)
     protected String email;
 

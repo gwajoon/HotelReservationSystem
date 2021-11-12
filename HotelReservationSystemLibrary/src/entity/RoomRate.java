@@ -15,6 +15,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import util.enumeration.RateType;
 /**
  *
@@ -27,14 +30,19 @@ public class RoomRate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @Size(min = 1, max = 32)
     @Column(length = 32, nullable = false)
     private String name;
+    @NotNull
     @Column(nullable = false)
+    @Digits(integer = 9, fraction = 2)
     private Double ratePerNight;
     
     private Date startDate;
     
     private Date endDate;
+
     @Column(nullable = false)
     private Boolean enabled;
     @Enumerated(EnumType.STRING)

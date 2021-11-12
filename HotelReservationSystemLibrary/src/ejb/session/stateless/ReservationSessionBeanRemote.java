@@ -11,6 +11,7 @@ import entity.SecondTypeException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.InputDataValidationException;
 import util.exception.PartnerNotFoundException;
 import util.exception.RegisteredGuestNotFoundException;
 import util.exception.ReservationNotFoundException;
@@ -23,7 +24,7 @@ import util.exception.UnknownPersistenceException;
 @Remote
 public interface ReservationSessionBeanRemote {
 
-    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException;
+    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException, InputDataValidationException;
 
     public Double calculatePrice(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType, Integer numOfRooms);
 
@@ -33,13 +34,13 @@ public interface ReservationSessionBeanRemote {
 
     public List<RoomRate> getRoomRates(Date checkInDate, Date checkOutDate, Long roomTypeId, String reservationType);
 
-    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException;
+    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException, InputDataValidationException;
 
-    public Long createNewPartnerReservation(Reservation reservation, Long roomTypeId, Long partnerId) throws UnknownPersistenceException;
+    public Long createNewPartnerReservation(Reservation reservation, Long roomTypeId, Long partnerId) throws UnknownPersistenceException, InputDataValidationException;
 
     public List<Reservation> viewAllPartnerReservations(Long partnerId) throws PartnerNotFoundException;
 
     public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException;
-    
+
     public List<SecondTypeException> viewAllocationExceptionReport(Long reservationId) throws ReservationNotFoundException;
 }
