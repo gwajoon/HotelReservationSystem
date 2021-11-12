@@ -81,13 +81,26 @@ public class DataInitSessionBean {
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "salesmanager", "password", EmployeeType.SALES_MANAGER));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "guestrelo", "password", EmployeeType.GUEST_RELATION));
 
-            Long deluxeId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Deluxe Room", "deluxe room", "Small", "Queen", "2", "drinks", 1));
-            Long premierId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Premier Room", "premier room", "Small", "Queen", "2", "drinks", 2));
-            Long familyId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Family Room", "family room", "Small", "Queen", "2", "drinks", 3));
-            Long juniorId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Junior Suite", "junior room", "Small", "Queen", "2", "drinks", 4));
-            Long grandId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Grand Suite", "grand room", "Small", "Queen", "2", "drinks", 5));
-
-         
+            RoomType roomType = new RoomType("Deluxe Room", "deluxe room", "Small", "Queen", "2", "drinks", 1);
+            em.persist(roomType);
+            em.flush();
+            Long deluxeId = roomType.getId();
+            roomType = new RoomType("Premier Room", "premier room", "Small", "Queen", "2", "drinks", 2);
+            em.persist(roomType);
+            em.flush();
+            Long premierId = roomType.getId();
+            roomType = new RoomType("Family Room", "family room", "Small", "Queen", "2", "drinks", 3);
+            em.persist(roomType);
+            em.flush();
+            Long familyId = roomType.getId();
+            roomType = new RoomType("Junior Suite", "junior room", "Small", "Queen", "2", "drinks", 4);
+            em.persist(roomType);
+            em.flush();
+            Long juniorId = roomType.getId();
+            roomType = new RoomType("Grand Suite", "grand room", "Small", "Queen", "2", "drinks", 5);
+            em.persist(roomType);
+            em.flush();
+            Long grandId = roomType.getId();
 
             RoomRate deluxeRoomRate1 = new RoomRate("Deluxe Room Published", RateType.PUBLISHED, 100.0);
             RoomRate deluxeRoomRate2 = new RoomRate("Deluxe Room Normal", RateType.NORMAL, 50.0);
@@ -99,6 +112,7 @@ public class DataInitSessionBean {
             RoomRate juniorSuiteRate2 = new RoomRate("Junior Suite Normal", RateType.NORMAL, 200.0);
             RoomRate grandSuiteRate1 = new RoomRate("Grand Suite Published", RateType.PUBLISHED, 500.0);
             RoomRate grandSuiteRate2 = new RoomRate("Grand Suite Normal", RateType.NORMAL, 250.0);
+            
             try {
                 roomRateSessionBeanLocal.createNewRoomRate(deluxeRoomRate1, deluxeId);
                 roomRateSessionBeanLocal.createNewRoomRate(deluxeRoomRate2, deluxeId);
@@ -177,7 +191,7 @@ public class DataInitSessionBean {
             roomSessionBeanLocal.createNewRoom(grandSuite4, grandId);
             roomSessionBeanLocal.createNewRoom(grandSuite5, grandId);
 
-        } catch (EmployeeEmailExistException | UnknownPersistenceException | RoomTypeNameExistsException | RoomNumberExistException | PartnerEmailExistException ex) {
+        } catch (EmployeeEmailExistException | UnknownPersistenceException | RoomNumberExistException | PartnerEmailExistException ex) {
             ex.printStackTrace();
         }
 
