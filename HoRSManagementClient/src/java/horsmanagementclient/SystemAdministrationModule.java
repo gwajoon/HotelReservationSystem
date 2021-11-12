@@ -127,7 +127,7 @@ public class SystemAdministrationModule {
             }
         }
         
-        Employee newEmployee = new Employee(firstName, lastName, email, password, EmployeeType.values()[employeeType-1]);
+        Employee newEmployee = new Employee(firstName, lastName, email, password, EmployeeType.values()[employeeType]);
         System.out.println(newEmployee);
         
         try

@@ -112,11 +112,12 @@ public class ReservationWebService {
             for (RoomRate rr : rt.getRoomRates()) {
             em.detach(rr);
             rr.setRoomType(null);
-        }
+            }
            for (Room r : rt.getRooms()) {
                em.detach(r);
                r.setRoomType(null);
            }
+          rt.setRooms(null);
         }
         return roomTypes;
     }

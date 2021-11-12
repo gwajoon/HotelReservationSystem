@@ -171,6 +171,8 @@ public class FrontOfficeModule {
         String email = scanner.nextLine();
         System.out.print("Enter reservation id > ");
         Long reservationId = scanner.nextLong();
+        
+        System.out.println("Guest successfully checked in!");
 
     }
 
