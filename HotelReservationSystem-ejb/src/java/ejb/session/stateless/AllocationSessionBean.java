@@ -125,7 +125,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                 availableRooms.add(room);
             } else {
                 Date checkOutDate = room.getReservations().get(room.getReservations().size() - 1).getCheckOutDate();
-                if (checkOutDate.before(date) || checkOutDate.equals(date)) {
+                if ((checkOutDate.before(date) || checkOutDate.equals(date)) && room.getRoomStatus()) {
                     availableRooms.add(room);
                 }
             }
