@@ -168,34 +168,35 @@ public class FrontOfficeModule {
 
     public void checkInGuest() {
         Scanner scanner = new Scanner(System.in);
-        int response;
-
+        
         System.out.println("*** Hotel Front Office Module :: Check In Guest ***\n");
 
         System.out.print("Enter reservation id > ");
         Long reservationId = scanner.nextLong();
         try {
             Reservation reservation = reservationSessionBeanRemote.checkInGuest(reservationId);
-            for(Room room: reservation.getRooms()){
-                System.out.println("Reservation " + reservation.getId() + " : Your allocated " + room.getRoomType() +
-                        " number is " + room.getRoomNumber());
+            for (Room room : reservation.getRooms()) {
+                System.out.println("Reservation " + reservation.getId() + " : Your allocated " + room.getRoomType()
+                        + " number is " + room.getRoomNumber());
             }
-            if(!reservation.getAllocationExceptions().isEmpty()){
-                for(SecondTypeException secondTypeException: reservation.getAllocationExceptions()){
-                   if(secondTypeException.getClass().equals(FirstTypeException.class)) {
-                       FirstTypeException firstTypeException = (FirstTypeException) secondTypeException;
-                       System.out.println("Reservation " + reservation.getId() + " : Your upgraded allocated " + 
-                               firstTypeException.getNewRoomType() + " number is " + firstTypeException.getNewRoom().getRoomNumber());
-                   } else {
-                       System.out.println("Reservation " + reservation.getId() + " Insufficient room availability for " + secondTypeException.getOldRoomType());
-                   }
+            if (!reservation.getAllocationExceptions().isEmpty()) {
+                for (SecondTypeException secondTypeException : reservation.getAllocationExceptions()) {
+                    if (secondTypeException.getClass().equals(FirstTypeException.class)) {
+                        FirstTypeException firstTypeException = (FirstTypeException) secondTypeException;
+                        System.out.println("Reservation " + reservation.getId() + " : Your upgraded allocated "
+                                + firstTypeException.getNewRoomType() + " number is " + firstTypeException.getNewRoom().getRoomNumber());
+                    } else {
+                        System.out.println("Reservation " + reservation.getId() + " Insufficient room availability for " + secondTypeException.getOldRoomType());
+                    }
                 }
             }
         } catch (ReservationNotFoundException ex) {
             System.out.println("Reservation " + reservationId + " not found");
+            
+            System.out.println("Successfully checked in guest");
         }
-        
-        
+
+
     }
 
     public void checkOutGuest() {
