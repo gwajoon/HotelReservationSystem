@@ -74,20 +74,17 @@ public class DataInitSessionBean {
 
     public void initialiseData() {
         try {
-            partnerSessionBeanLocal.createNewPartner(new Partner("Hotel", "Trivago", "partner", "password"));
-            
+
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "sysadmin", "password", EmployeeType.SYSTEM_ADMIN));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "opmanager", "password", EmployeeType.OPERATION_MANAGER));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "salesmanager", "password", EmployeeType.SALES_MANAGER));
             employeeSessionBeanLocal.createNewEmployee(new Employee("Default", "Admin", "guestrelo", "password", EmployeeType.GUEST_RELATION));
 
             Long deluxeId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Deluxe Room", "deluxe room", "Small", "Queen", "2", "drinks", 1), 1);
-            Long premierId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Premier Room", "premier room", "Small", "Queen", "2", "drinks",2), 2);
+            Long premierId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Premier Room", "premier room", "Small", "Queen", "2", "drinks", 2), 2);
             Long familyId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Family Room", "family room", "Small", "Queen", "2", "drinks", 3), 3);
             Long juniorId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Junior Suite", "junior room", "Small", "Queen", "2", "drinks", 4), 4);
             Long grandId = roomTypeSessionBeanLocal.createNewRoomType(new RoomType("Grand Suite", "grand room", "Small", "Queen", "2", "drinks", 5), 5);
-
-         
 
             RoomRate deluxeRoomRate1 = new RoomRate("Deluxe Room Published", RateType.PUBLISHED, 100.0);
             RoomRate deluxeRoomRate2 = new RoomRate("Deluxe Room Normal", RateType.NORMAL, 50.0);
@@ -110,10 +107,10 @@ public class DataInitSessionBean {
                 roomRateSessionBeanLocal.createNewRoomRate(juniorSuiteRate2, juniorId);
                 roomRateSessionBeanLocal.createNewRoomRate(grandSuiteRate1, grandId);
                 roomRateSessionBeanLocal.createNewRoomRate(grandSuiteRate2, grandId);
-                
+
             } catch (RoomRateNameExistsException ex) {
                 System.out.print("Room Rate Name already exists");
-            } catch(UnknownPersistenceException ex){
+            } catch (UnknownPersistenceException ex) {
                 System.out.print(ex.getMessage());
             }
 
@@ -177,11 +174,10 @@ public class DataInitSessionBean {
             roomSessionBeanLocal.createNewRoom(grandSuite4, grandId);
             roomSessionBeanLocal.createNewRoom(grandSuite5, grandId);
 
-        } catch (EmployeeEmailExistException | UnknownPersistenceException | RoomTypeNameExistsException | RoomNumberExistException | PartnerEmailExistException ex) {
+        } catch (EmployeeEmailExistException | UnknownPersistenceException | RoomTypeNameExistsException | RoomNumberExistException ex) {
             ex.printStackTrace();
         }
 
     }
 
-    
 }
