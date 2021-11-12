@@ -454,10 +454,10 @@ public class HotelOperationModule {
         if (rateType.equals(RateType.PEAK) || rateType.equals(RateType.PROMOTION)) {
 
             try {
-                System.out.print("Enter start date (DDMMYYYY) of room rate (press enter if no validity period) > ");
+                System.out.print("Enter start date (DD/MM/YYYY) of room rate (press enter if no validity period) > ");
                 Date startDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
 
-                System.out.print("Enter end date (DDMMYYYY) of room rate (press enter if no validity period) > ");
+                System.out.print("Enter end date (DD/MM/YYYY) of room rate (press enter if no validity period) > ");
                 Date endDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
                 newRoomRate.setStartDate(startDate);
                 newRoomRate.setEndDate(endDate);
@@ -466,8 +466,6 @@ public class HotelOperationModule {
             }
 
         }
-
-        System.out.println(newRoomRate.getName() + newRoomRate.getRatePerNight() + newRoomRate.getStartDate() + newRoomRate.getEndDate());
 
         System.out.println("Select Room Type");
         List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
