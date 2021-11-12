@@ -5,6 +5,7 @@
  */
 package horsmanagementclient;
 
+import ejb.session.stateless.AllocationSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
@@ -48,16 +49,19 @@ public class HotelOperationModule {
     private Employee currentEmployee;
     private RoomSessionBeanRemote roomSessionBeanRemote;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
-    
+    private AllocationSessionBeanRemote allocationSessionBeanRemote;
+
     public HotelOperationModule() {
     }
 
-    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, Employee employee, RoomSessionBeanRemote roomSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote) {
+    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, Employee employee,
+            RoomSessionBeanRemote roomSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         this.currentEmployee = employee;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
+        this.allocationSessionBeanRemote = allocationSessionBeanRemote;
     }
 
     public void hotelOperationMenu() {
@@ -74,10 +78,11 @@ public class HotelOperationModule {
                 System.out.println("3. Create New Room");
                 System.out.println("4. View All Rooms");
                 System.out.println("5. View Room Allocation Exception Report");
-                System.out.println("6. Back\n");
+                System.out.println("6. Manually trigger room allocations");
+                System.out.println("7. Back\n");
                 response = 0;
 
-                while (response < 1 || response > 6) {
+                while (response < 1 || response > 7) {
                     System.out.print("> ");
 
                     response = scanner.nextInt();
@@ -93,10 +98,12 @@ public class HotelOperationModule {
                     } else if (response == 5) {
                         doViewAllocationExceptionReport();
                     } else if (response == 6) {
+                        doManualAllocation();
+                    } else if (response == 7) {
                         break;
                     }
                 }
-                if (response == 6) {
+                if (response == 7) {
                     break;
                 }
             }
@@ -108,7 +115,7 @@ public class HotelOperationModule {
                 System.out.println("4. Back\n");
                 response = 0;
 
-                while (response < 1 || response > 6) {
+                while (response < 1 || response > 4) {
                     System.out.print("> ");
 
                     response = scanner.nextInt();
@@ -154,15 +161,27 @@ public class HotelOperationModule {
         System.out.print("Enter amenities > ");
         String amenities = scanner.nextLine().trim();
 
-        System.out.print("Enter priority > ");
-        int priority = scanner.nextInt();
+        System.out.print("Select priority: ");
+        List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
+        for (RoomType roomType : roomTypes) {
+            System.out.println("" + roomType.getPriority() + " " + roomType.getName());
+        }
 
-        RoomType newRoomType = new RoomType(name, description, size, bed, capacity, amenities, priority);
+        System.out.print("Select room type that is next higher>  ");
+        System.out.print("If none, input 0 >  ");
+        int nextHigher = scanner.nextInt();
+
+        if (nextHigher == 0) {
+            nextHigher = roomTypes.size() + 1;
+        }
+
+        RoomType newRoomType = new RoomType(name, description, size, bed, capacity, amenities, nextHigher);
         System.out.println(newRoomType.getName() + newRoomType.getDescription() + newRoomType.getSize() + newRoomType.getBed() + newRoomType.getCapacity() + newRoomType.getAmenities());
 
         try {
-            Long newRoomRateId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType);
-            System.out.println("New room type created successfully!: " + newRoomRateId + "\n");
+            Long newRoomRateId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType, nextHigher);
+            System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
+
         } catch (RoomTypeNameExistsException ex) {
             System.out.println("An error has occurred while creating the new room type!: The room type name already exist\n");
         } catch (UnknownPersistenceException ex) {
@@ -215,7 +234,7 @@ public class HotelOperationModule {
         if (name.length() > 0) {
             roomType.setName(name);
         }
-        
+
         System.out.print("Enter updated description of room type(blank if no change)  > ");
         String description = scanner.nextLine();
         if (description.length() > 0) {
@@ -360,9 +379,17 @@ public class HotelOperationModule {
         for (RoomType rt : roomTypes) {
             System.out.println("Room Id: " + rt.getId() + ". " + rt.getName());
         }
-        System.out.print("Choose ID of new room type > ");
-
+        System.out.print("Choose ID of new room type (choose back room type ID if no change) > ");
         Long roomTypeId = scanner.nextLong();
+
+        try {
+            RoomType roomType = roomTypeSessionBeanRemote.retrieveRoomTypeByRoomTypeId(roomTypeId);
+            if (roomTypeId.toString().length() > 0) {
+                room.setRoomType(roomType);
+            }
+        } catch (RoomTypeNotFoundException ex) {
+            System.out.println("Room type id does not exist");
+        }
 
         int availability = 0;
 
@@ -603,23 +630,32 @@ public class HotelOperationModule {
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
-    
+
     public void doViewAllocationExceptionReport() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View Allocation Excetpion Report ***\n");
-        System.out.print("Enter ID of reservation to view > ");
+        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View Allocation Exception Report ***\n");
         Long reservationId = scanner.nextLong();
-        
+
+        List<SecondTypeException> secondTypeExceptions = allocationSessionBeanRemote.viewAllocationExceptionReport();
+        for (SecondTypeException ex : secondTypeExceptions) {
+            System.out.println(ex.toString());
+        }
+
+    }
+
+    public void doManualAllocation() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Date > ");
+
         try {
-            List<SecondTypeException> secondTypeExceptions = reservationSessionBeanRemote.viewAllocationExceptionReport(reservationId);
-            for (SecondTypeException ex : secondTypeExceptions) {
-                System.out.println(ex.toString());
-            }
+            System.out.print("Enter check-in date (dd/mm/yyyy) > ");
+            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
+            allocationSessionBeanRemote.allocateRoomToCurrentDayReservations(date);
+            System.out.print("Allocating now...");
+
+        } catch (ParseException ex) {
+            System.out.println("Invalid date!");
+            return;
         }
-        catch (ReservationNotFoundException ex) { 
-            System.out.println("Reservation with Id: " + reservationId + " not found.");
-        }
-        
-        
     }
 }

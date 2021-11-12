@@ -105,7 +105,7 @@ public class MainApp {
 
         while (true) {
             System.out.println("*** Holiday Reservation System :: Reservation :: Registered Partner ***\n");
-            System.out.println("1: Reserve Hotel Room");
+            System.out.println("1: Search Hotel Room");
             System.out.println("2. View My Reservation Details");
             System.out.println("3. View All My Reservations");
 
