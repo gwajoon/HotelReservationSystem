@@ -205,31 +205,37 @@ public class HotelOperationModule {
 
         System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: Update Room Type ***\n");
 
-        System.out.print("Enter description of room type > ");
+        System.out.print("Enter updated name of room type > ");
+        String name = scanner.nextLine();
+        if (name.length() > 0) {
+            roomType.setName(name);
+        }
+        
+        System.out.print("Enter updated description of room type(blank if no change)  > ");
         String description = scanner.nextLine();
         if (description.length() > 0) {
             roomType.setDescription(description);
         }
 
-        System.out.print("Enter size of room type > ");
+        System.out.print("Enter updated size of room type (blank if no change) > ");
         String size = scanner.nextLine();
         if (size.length() > 0) {
             roomType.setSize(size);
         }
 
-        System.out.print("Enter bed of room type > ");
+        System.out.print("Enter updated bed of room type (blank if no change) > ");
         String bed = scanner.nextLine();
         if (bed.length() > 0) {
             roomType.setBed(bed);
         }
 
-        System.out.print("Enter capacity > ");
+        System.out.print("Enter updated capacity (blank if no change) > ");
         String capacity = scanner.nextLine().trim();
         if (capacity.length() > 0) {
             roomType.setCapacity(capacity);
         }
 
-        System.out.print("Enter amenities > ");
+        System.out.print("Enter updated amenities(blank if no change) > ");
         String amenities = scanner.nextLine().trim();
         if (amenities.length() > 0) {
             roomType.setAmenities(amenities);
@@ -396,12 +402,12 @@ public class HotelOperationModule {
         if (input.equals("Y")) {
             try {
                 roomSessionBeanRemote.deleteRoom(room.getId());
-                System.out.println("Room Rate deleted successfully!\n");
+                System.out.println("Room deleted successfully!\n");
             } catch (RoomNotFoundException | DeleteRoomException ex) {
                 System.out.println("An error has occurred while deleting the room: " + ex.getMessage() + "\n");
             }
         } else {
-            System.out.println("Room rate NOT deleted!\n");
+            System.out.println("Room NOT deleted!\n");
         }
     }
 
@@ -496,7 +502,7 @@ public class HotelOperationModule {
             RoomRate roomRate = roomRateSessionBeanRemote.retrieveRoomRateByRoomRateId(roomRateId);
 
             System.out.println("** " + "Room rate ID: " + roomRate.getId() + ", Room rate name: " + roomRate.getName() + " **\n");
-            System.out.printf("Rate per night: %d, start date: %s, end date: %s", roomRate.getRatePerNight(), roomRate.getStartDate(), roomRate.getEndDate());
+            System.out.printf("Rate per night: %s, start date: %s, end date: %s", roomRate.getRatePerNight(), roomRate.getStartDate().toString(), roomRate.getEndDate().toString());
             System.out.println("------------------------");
             System.out.println("1: Update Room Rate");
             System.out.println("2: Delete Room Rate");

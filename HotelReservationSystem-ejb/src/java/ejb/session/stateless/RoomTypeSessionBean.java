@@ -64,6 +64,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
             RoomType roomTypeToUpdate = em.find(RoomType.class, roomType.getId());
 
             if (roomTypeToUpdate.getName().equals(roomType.getName())) {
+                roomTypeToUpdate.setName(roomType.getName());
                 roomTypeToUpdate.setDescription(roomType.getDescription());
                 roomTypeToUpdate.setSize(roomType.getSize());
                 roomTypeToUpdate.setBed(roomType.getBed());
