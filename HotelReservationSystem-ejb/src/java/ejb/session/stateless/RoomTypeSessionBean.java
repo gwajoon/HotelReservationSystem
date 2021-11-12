@@ -104,6 +104,15 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
             }
         }
         
+        int deletedPriority = roomTypeToRemove.getPriority();
+        List<RoomType> roomTypes = this.viewAllRoomTypes();
+        for(RoomType roomType: roomTypes){
+            int priority = roomType.getPriority();
+            if(priority > deletedPriority){
+                roomType.setPriority(priority - 1);
+            }
+        }
+        
         em.remove(roomTypeToRemove);
 
     }

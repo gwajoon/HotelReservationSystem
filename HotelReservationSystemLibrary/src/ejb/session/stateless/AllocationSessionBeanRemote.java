@@ -5,7 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.SecondTypeException;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Remote;
 
 /**
@@ -18,5 +20,7 @@ public interface AllocationSessionBeanRemote {
     public void allocateRoomToCurrentDayReservations(Date date);
 
     public void allocateCurrentDay(Long reservationId, Date date);
+
+    public List<SecondTypeException> viewAllocationExceptionReport();
     
 }

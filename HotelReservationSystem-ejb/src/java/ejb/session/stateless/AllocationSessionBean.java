@@ -42,28 +42,21 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
     public void allocateRoomToCurrentDayReservations(Date date) {
 
-//        LocalDateTime date = new java.sql.Timestamp(
-//                currentDate.getTime()).toLocalDateTime();
-//        
-//        Integer hour = date.getHour();
-//        date.plusHours(new Long(2 - hour));
         Query query = em.createQuery("SELECT r FROM Reservation r WHERE r.checkInDate = ?1");
         query.setParameter(1, date);
         List<Reservation> list = query.getResultList();
 
         Query query1 = em.createQuery("SELECT r From RoomType r");
 
-        
-
         for (Reservation reservation : list) {
             RoomType roomType = reservation.getRoomType();
             Integer rank = roomType.getPriority();
             Integer higherRank = rank + 1;
-            
+
             List<Room> availableRooms = getAvailableRooms(roomType, date);
             Integer numOfRooms = reservation.getNumberOfRooms();
 
-            while (numOfRooms != 0 || rank == higherRank + 1) {
+            while (numOfRooms != 0 || rank != higherRank + 1) {
                 if (!availableRooms.isEmpty()) {
                     Room room = availableRooms.get(0);
                     RoomType allocatedRoomType = room.getRoomType();
@@ -80,12 +73,13 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                     }
 
                 } else {
+                    rank++;
                     Query nextHigherRoomTypeQuery = em.createQuery("SELECT r FROM RoomType r WHERE r.priority = ?1");
-                    nextHigherRoomTypeQuery.setParameter(1, higherRank);
+                    nextHigherRoomTypeQuery.setParameter(1, rank);
                     try {
                         RoomType nextHigherRoomType = (RoomType) nextHigherRoomTypeQuery.getSingleResult();
                         availableRooms = getAvailableRooms(nextHigherRoomType, date);
-                        rank++;
+                        
                     } catch (NoResultException ex) {
                         break;
                     }
@@ -121,12 +115,14 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
         List<Room> availableRooms = new ArrayList<Room>();
 
         for (Room room : rooms) {
-            if (room.getReservations().isEmpty()) {
-                availableRooms.add(room);
-            } else {
-                Date checkOutDate = room.getReservations().get(room.getReservations().size() - 1).getCheckOutDate();
-                if ((checkOutDate.before(date) || checkOutDate.equals(date)) && room.getRoomStatus()) {
+            if (room.getRoomStatus()) {
+                if (room.getReservations().isEmpty()) {
                     availableRooms.add(room);
+                } else {
+                    Date checkOutDate = room.getReservations().get(room.getReservations().size() - 1).getCheckOutDate();
+                    if ((checkOutDate.before(date) || checkOutDate.equals(date)) && room.getRoomStatus()) {
+                        availableRooms.add(room);
+                    }
                 }
             }
         }
@@ -171,6 +167,11 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
             }
         }
+    }
+
+    public List<SecondTypeException> viewAllocationExceptionReport() {
+        Query query = em.createQuery("SELECT e FROM SecondTypeException e");
+        return query.getResultList();
     }
 
 }
