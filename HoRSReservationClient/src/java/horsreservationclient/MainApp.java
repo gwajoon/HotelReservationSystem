@@ -240,14 +240,17 @@ public class MainApp {
                     System.out.println("" + i + " " + roomType.getName() + " " + reservationSessionBeanRemote.calculatePrice(checkInDate, checkOutDate, roomType.getId(), "Online", numOfRooms) + ", \n");
                 }
                 int selection = scanner.nextInt();
-
-                if (currentGuest.getId() != null) {
+                
+                if ( selection > 0 && selection <= availableRoomTypes.size() && currentGuest.getId() != null) {
                     doReserveHotelRoom(availableRoomTypes.get(selection - 1).getId(), checkInDate, checkOutDate, numOfRooms, currentGuest.getId());
+                } else {
+                    System.out.println("Invalid Selection");
                 }
             }
         }
     }
 
+    
     public void doReserveHotelRoom(Long roomTypeId, Date checkInDate, Date checkOutDate, Integer numOfRooms, Long guestId) {
         System.out.println("*** Hotel Reservation System :: Reservation :: Registered Guest :: Reserve Room ***\n");
 

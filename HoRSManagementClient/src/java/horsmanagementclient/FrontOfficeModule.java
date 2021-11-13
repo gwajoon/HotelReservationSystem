@@ -147,8 +147,12 @@ public class FrontOfficeModule {
             System.out.println("Input email >");
             String email = scanner.nextLine().trim();
 
-            doReserveHotelRoom(availableRoomTypes.get(selection - 1).getId(), checkInDate, checkOutDate, numOfRooms, firstName, lastName, email);
+            if (selection > 0 && selection <= availableRoomTypes.size()) {
 
+                doReserveHotelRoom(availableRoomTypes.get(selection - 1).getId(), checkInDate, checkOutDate, numOfRooms, firstName, lastName, email);
+            } else {
+                System.out.println("Invalid Selection");
+            }
         }
 
     }
