@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,7 +25,12 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import util.enumeration.RateType;
+import util.exception.InputDataValidationException;
 import util.exception.PartnerNotFoundException;
 import util.exception.RegisteredGuestNotFoundException;
 import util.exception.ReservationNotFoundException;
@@ -40,76 +46,109 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @PersistenceContext
     private EntityManager em;
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
-    @Override
-    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException {
-        try {
-            Query query = em.createQuery("SELECT g FROM Guest g WHERE g.email = ?1");
-            query.setParameter(1, email);
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
 
-            Guest guest;
+    public ReservationSessionBean() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+
+    @Override
+    public Long createNewWalkInReservation(Reservation reservation, Long roomTypeId, String firstName, String lastName, String email) throws UnknownPersistenceException, InputDataValidationException {
+
+        Set<ConstraintViolation<Reservation>> constraintViolations = validator.validate(reservation);
+
+        if (constraintViolations.isEmpty()) {
 
             try {
-                guest = (Guest) query.getSingleResult();
-            } catch (NoResultException ex) {
-                guest = new Guest(firstName, lastName, email);
-                em.persist(guest);
+                Query query = em.createQuery("SELECT g FROM Guest g WHERE g.email = ?1");
+                query.setParameter(1, email);
+
+                Guest guest;
+
+                try {
+                    guest = (Guest) query.getSingleResult();
+                } catch (NoResultException ex) {
+                    guest = new Guest(firstName, lastName, email);
+                    em.persist(guest);
+                }
+
+                RoomType roomType = em.find(RoomType.class, roomTypeId);
+                reservation.setRoomType(roomType);
+                reservation.setGuest(guest);
+                reservation.setReservationType("Walk-In");
+                em.persist(reservation);
+                em.flush();
+                guest.getReservations().add(reservation);
+                return reservation.getId();
+
+            } catch (PersistenceException ex) {
+
+                throw new UnknownPersistenceException(ex.getMessage());
+
             }
-
-            RoomType roomType = em.find(RoomType.class, roomTypeId);
-            reservation.setRoomType(roomType);
-            reservation.setGuest(guest);
-            reservation.setReservationType("Walk-In");
-            em.persist(reservation);
-            em.flush();
-            guest.getReservations().add(reservation);
-            return reservation.getId();
-
-        } catch (PersistenceException ex) {
-
-            throw new UnknownPersistenceException(ex.getMessage());
-
+        } else {
+            throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
 
     @Override
-    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException {
-        try {
-            RoomType roomType = em.find(RoomType.class, roomTypeId);
-            RegisteredGuest guest = em.find(RegisteredGuest.class, guestId);
+    public Long createNewOnlineReservation(Reservation reservation, Long roomTypeId, Long guestId) throws UnknownPersistenceException, InputDataValidationException {
 
-            reservation.setRoomType(roomType);
-            reservation.setGuest(guest);
-            reservation.setReservationType("Online");
-            em.persist(reservation);
-            em.flush();
-            guest.getReservations().add(reservation);
-            return reservation.getId();
+        Set<ConstraintViolation<Reservation>> constraintViolations = validator.validate(reservation);
 
-        } catch (PersistenceException ex) {
+        if (constraintViolations.isEmpty()) {
 
-            throw new UnknownPersistenceException(ex.getMessage());
+            try {
+                RoomType roomType = em.find(RoomType.class, roomTypeId);
+                RegisteredGuest guest = em.find(RegisteredGuest.class, guestId);
+
+                reservation.setRoomType(roomType);
+                reservation.setGuest(guest);
+                reservation.setReservationType("Online");
+                em.persist(reservation);
+                em.flush();
+                guest.getReservations().add(reservation);
+                return reservation.getId();
+
+            } catch (PersistenceException ex) {
+
+                throw new UnknownPersistenceException(ex.getMessage());
+
+            }
+
+        } else {
+            throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
 
         }
     }
-    
-    public Long createNewPartnerReservation(Reservation reservation, Long roomTypeId, Long partnerId) throws UnknownPersistenceException {
-        try {
-            RoomType roomType = em.find(RoomType.class, roomTypeId);
-            Partner partner = em.find(Partner.class, partnerId);
 
-            reservation.setRoomType(roomType);
-            reservation.setGuest(partner);
-            reservation.setReservationType("Online");
-            em.persist(reservation);
-            partner.getReservations().add(reservation);
-            em.flush();
-            return reservation.getId();
+    public Long createNewPartnerReservation(Reservation reservation, Long roomTypeId, Long partnerId) throws UnknownPersistenceException, InputDataValidationException {
 
-        } catch (PersistenceException ex) {
+        Set<ConstraintViolation<Reservation>> constraintViolations = validator.validate(reservation);
 
-            throw new UnknownPersistenceException(ex.getMessage());
+        if (constraintViolations.isEmpty()) {
+
+            try {
+                RoomType roomType = em.find(RoomType.class, roomTypeId);
+                Partner partner = em.find(Partner.class, partnerId);
+
+                reservation.setRoomType(roomType);
+                reservation.setGuest(partner);
+                reservation.setReservationType("Online");
+                em.persist(reservation);
+                partner.getReservations().add(reservation);
+                em.flush();
+                return reservation.getId();
+
+            } catch (PersistenceException ex) {
+
+                throw new UnknownPersistenceException(ex.getMessage());
+
+            }
+        } else {
+            throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
 
         }
     }
@@ -135,7 +174,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             throw new RegisteredGuestNotFoundException("Registered Guest ID " + registeredGuestId + " does not exist!");
         }
     }
-    
+
     @Override
     public List<Reservation> viewAllPartnerReservations(Long partnerId) throws PartnerNotFoundException {
         Guest guest = em.find(Guest.class, partnerId);
@@ -147,28 +186,28 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             throw new PartnerNotFoundException("Partner ID " + partnerId + " does not exist!");
         }
     }
-    
+
     public List<SecondTypeException> viewAllocationExceptionReport(Long reservationId) throws ReservationNotFoundException {
         Reservation reservation = em.find(Reservation.class, reservationId);
-        if(reservation == null){
+        if (reservation == null) {
             throw new ReservationNotFoundException();
         }
         reservation.getAllocationExceptions().size();
-        
+
         return reservation.getAllocationExceptions();
     }
 
-    public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException{
+    public Reservation checkInGuest(Long reservationId) throws ReservationNotFoundException {
         Reservation reservation = em.find(Reservation.class, reservationId);
-        
-        if(reservation == null){
+
+        if (reservation == null) {
             throw new ReservationNotFoundException();
-        } 
-        
+        }
+
         reservation.getRooms().size();
         reservation.getAllocationExceptions().size();
-        
-        return reservation;  
+
+        return reservation;
     }
 
     @Override
@@ -259,5 +298,15 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             }
         }
         return roomRates;
+    }
+
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<Reservation>> constraintViolations) {
+        String msg = "Input data validation error!:";
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            msg += "\n\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage();
+        }
+
+        return msg;
     }
 }

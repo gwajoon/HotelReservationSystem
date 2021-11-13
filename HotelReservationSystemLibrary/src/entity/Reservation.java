@@ -19,6 +19,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -31,14 +33,19 @@ public class Reservation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     @Column(nullable = false)
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date checkInDate;
+    @NotNull
     @Column(nullable = false)
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date checkOutDate;
+    @NotNull
+    @Min(0)
     @Column(nullable = false)
     private int numberOfRooms;
+    @NotNull
     @Column(nullable = false)
     private String reservationType;
 

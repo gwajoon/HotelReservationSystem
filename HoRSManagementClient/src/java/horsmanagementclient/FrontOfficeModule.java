@@ -21,8 +21,14 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import util.exception.InputDataValidationException;
 import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -36,12 +42,16 @@ public class FrontOfficeModule {
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
     private RoomInventorySessionBeanRemote roomInventorySessionBeanRemote;
     private AllocationSessionBeanRemote allocationSessionBeanRemote;
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
 
     public FrontOfficeModule(ReservationSessionBeanRemote reservationSessionBeanRemote,
             RoomInventorySessionBeanRemote roomInventorySessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
         this.roomInventorySessionBeanRemote = roomInventorySessionBeanRemote;
         this.allocationSessionBeanRemote = allocationSessionBeanRemote;
+        this.validatorFactory = Validation.buildDefaultValidatorFactory();
+        this.validator = validatorFactory.getValidator();
     }
 
     public void frontOfficeMenu() {
@@ -152,23 +162,32 @@ public class FrontOfficeModule {
         reservation.setNumberOfRooms(numOfRooms);
         reservation.setReservationType("Walk-In");
 
-        try {
-            Long reservationId = reservationSessionBeanRemote.createNewWalkInReservation(reservation, roomTypeId, firstName, lastName, email);
-            System.out.println("Reservation " + reservationId + " successfully made");
+        Set<ConstraintViolation<Reservation>> constraintViolations = validator.validate(reservation);
 
-            if (doCheckIfSameDay(checkInDate, new Date())) {
-                System.out.println("allocating now");
-                allocationSessionBeanRemote.allocateCurrentDay(reservationId, checkInDate);
+        if (constraintViolations.isEmpty()) {
+
+            try {
+                Long reservationId = reservationSessionBeanRemote.createNewWalkInReservation(reservation, roomTypeId, firstName, lastName, email);
+                System.out.println("Reservation " + reservationId + " successfully made");
+
+                if (doCheckIfSameDay(checkInDate, new Date())) {
+                    System.out.println("allocating now");
+                    allocationSessionBeanRemote.allocateCurrentDay(reservationId, checkInDate);
+                }
+
+            } catch (UnknownPersistenceException ex) {
+                System.out.println(ex.getMessage());
+            } catch (InputDataValidationException ex) {
+                System.out.println(ex.getMessage() + "\n");
             }
-
-        } catch (UnknownPersistenceException ex) {
-            System.out.println(ex.getMessage());
+        } else {
+            showInputDataValidationErrors(constraintViolations);
         }
     }
 
     public void checkInGuest() {
         Scanner scanner = new Scanner(System.in);
-        
+
         System.out.println("*** Hotel Front Office Module :: Check In Guest ***\n");
 
         System.out.print("Enter reservation id > ");
@@ -192,10 +211,9 @@ public class FrontOfficeModule {
             }
         } catch (ReservationNotFoundException ex) {
             System.out.println("Reservation " + reservationId + " not found");
-            
+
             System.out.println("Successfully checked in guest");
         }
-
 
     }
 
@@ -216,5 +234,15 @@ public class FrontOfficeModule {
         return newCheckInDate.getDayOfYear() == newCurrentDate.getDayOfYear() && newCheckInDate.getYear() == newCurrentDate.getYear()
                 && newCurrentDate.getHour() >= 2;
 
+    }
+
+    private void showInputDataValidationErrors(Set<ConstraintViolation<Reservation>> constraintViolations) {
+        System.out.println("\nInput data validation error!:");
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            System.out.println("\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage());
+        }
+
+        System.out.println("\nPlease try again......\n");
     }
 }
