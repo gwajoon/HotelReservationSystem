@@ -27,10 +27,9 @@ import util.exception.RoomNumberExistException;
 import util.exception.RoomTypeNameExistsException;
 import util.exception.UnknownPersistenceException;
 import ejb.session.stateless.RoomSessionBeanLocal;
-import entity.Partner;
 import entity.RoomRate;
 import util.enumeration.RateType;
-import util.exception.PartnerEmailExistException;
+import util.exception.InputDataValidationException;
 import util.exception.RoomRateNameExistsException;
 
 /**
@@ -175,7 +174,7 @@ public class DataInitSessionBean {
             roomSessionBeanLocal.createNewRoom(grandSuite4, grandId);
             roomSessionBeanLocal.createNewRoom(grandSuite5, grandId);
 
-        } catch (EmployeeEmailExistException | UnknownPersistenceException | RoomTypeNameExistsException | RoomNumberExistException ex) {
+        } catch (EmployeeEmailExistException | UnknownPersistenceException | RoomTypeNameExistsException | RoomNumberExistException | InputDataValidationException ex) {
             ex.printStackTrace();
         }
 

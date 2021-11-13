@@ -17,6 +17,9 @@ import entity.Employee;
 import java.util.Scanner;
 import util.exception.InvalidLoginCredentialException;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import static util.enumeration.EmployeeType.GUEST_RELATION;
 import static util.enumeration.EmployeeType.OPERATION_MANAGER;
 import static util.enumeration.EmployeeType.SALES_MANAGER;
@@ -44,15 +47,11 @@ public class MainApp {
     private PartnerSessionBeanRemote partnerSessionBeanRemote;
     private AllocationSessionBeanRemote allocationSessionBeanRemote;
 
-    public MainApp() {
-    }
-
     public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote,
             RegisteredGuestSessionBeanRemote registeredGuestSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote,
             RoomInventorySessionBeanRemote roomInventorySessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote,
             RoomSessionBeanRemote roomSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote,
             PartnerSessionBeanRemote partnerSessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
-
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.registeredGuestSessionBeanRemote = registeredGuestSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;

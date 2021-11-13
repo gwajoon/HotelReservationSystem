@@ -22,6 +22,10 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerEmailExistException;
 import util.exception.PartnerNotFoundException;
@@ -48,10 +52,16 @@ public class ReservationWebService {
     @EJB 
     private RoomInventorySessionBeanLocal roomInventorySessionBeanLocal;
     
-    
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
+
+    public ReservationWebService() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
     
     @WebMethod(operationName = "createNewWalkInReservation")
-    public Long createNewWalkInReservation(@WebParam(name = "reservation") Reservation reservation, @WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "firstName") String firstName, @WebParam(name = "lastName") String lastName, @WebParam(name = "email") String email) throws UnknownPersistenceException {
+    public Long createNewWalkInReservation(@WebParam(name = "reservation") Reservation reservation, @WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "firstName") String firstName, @WebParam(name = "lastName") String lastName, @WebParam(name = "email") String email) throws UnknownPersistenceException, InputDataValidationException {
         return reservationSessionBeanLocal.createNewWalkInReservation(reservation, roomTypeId, firstName, lastName, email);
     }
 
@@ -96,12 +106,12 @@ public class ReservationWebService {
     }
 
     @WebMethod(operationName = "createNewOnlineReservation")
-    public Long createNewOnlineReservation(@WebParam(name = "reservation") Reservation reservation, @WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "guestId") Long guestId) throws UnknownPersistenceException {
+    public Long createNewOnlineReservation(@WebParam(name = "reservation") Reservation reservation, @WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "guestId") Long guestId) throws UnknownPersistenceException, InputDataValidationException {
         return reservationSessionBeanLocal.createNewOnlineReservation(reservation, roomTypeId, guestId);
     }
 
     @WebMethod(operationName = "createNewPartnerReservation")
-    public Long createNewPartnerReservation(@WebParam(name = "reservation") Reservation reservation, @WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "guestId") Long guestId) throws UnknownPersistenceException {
+    public Long createNewPartnerReservation(@WebParam(name = "reservation") Reservation reservation, @WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "guestId") Long guestId) throws UnknownPersistenceException, InputDataValidationException {
         return reservationSessionBeanLocal.createNewPartnerReservation(reservation, roomTypeId, guestId);
     }
     
@@ -136,7 +146,7 @@ public class ReservationWebService {
     }
 
     @WebMethod(operationName = "createNewPartner")
-    public Long createNewPartner(@WebParam(name = "newPartner") Partner newPartner) throws PartnerEmailExistException, UnknownPersistenceException {
+    public Long createNewPartner(@WebParam(name = "newPartner") Partner newPartner) throws PartnerEmailExistException, UnknownPersistenceException, InputDataValidationException {
         return partnerSessionBeanLocal.createNewPartner(newPartner);
     }
 

@@ -27,12 +27,17 @@ import entity.SecondTypeException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import util.enumeration.RateType;
 import util.exception.DeleteRoomException;
 import util.exception.DeleteRoomTypeException;
-import util.exception.ReservationNotFoundException;
+import util.exception.InputDataValidationException;
 import util.exception.RoomNotFoundException;
 import util.exception.RoomNumberExistException;
 import util.exception.RoomTypeNotFoundException;
@@ -50,9 +55,8 @@ public class HotelOperationModule {
     private RoomSessionBeanRemote roomSessionBeanRemote;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
     private AllocationSessionBeanRemote allocationSessionBeanRemote;
-
-    public HotelOperationModule() {
-    }
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
 
     public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, Employee employee,
             RoomSessionBeanRemote roomSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
@@ -62,6 +66,8 @@ public class HotelOperationModule {
         this.roomSessionBeanRemote = roomSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
         this.allocationSessionBeanRemote = allocationSessionBeanRemote;
+        this.validatorFactory = Validation.buildDefaultValidatorFactory();
+        this.validator = validatorFactory.getValidator();
     }
 
     public void hotelOperationMenu() {
@@ -178,14 +184,23 @@ public class HotelOperationModule {
         RoomType newRoomType = new RoomType(name, description, size, bed, capacity, amenities, nextHigher);
         System.out.println(newRoomType.getName() + newRoomType.getDescription() + newRoomType.getSize() + newRoomType.getBed() + newRoomType.getCapacity() + newRoomType.getAmenities());
 
-        try {
-            Long newRoomRateId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType, nextHigher);
-            System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
+        Set<ConstraintViolation<RoomType>> constraintViolations = validator.validate(newRoomType);
 
-        } catch (RoomTypeNameExistsException ex) {
-            System.out.println("An error has occurred while creating the new room type!: The room type name already exist\n");
-        } catch (UnknownPersistenceException ex) {
-            System.out.println("An unknown error has occurred while creating the new room type!: " + ex.getMessage() + "\n");
+        if (constraintViolations.isEmpty()) {
+            try {
+                Long newRoomRateId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType, nextHigher);
+                System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
+
+            } catch (RoomTypeNameExistsException ex) {
+                System.out.println("An error has occurred while creating the new room type!: The room type name already exist\n");
+            } catch (UnknownPersistenceException ex) {
+                System.out.println("An unknown error has occurred while creating the new room type!: " + ex.getMessage() + "\n");
+            } catch (InputDataValidationException ex) {
+                    System.out.println(ex.getMessage() + "\n");
+            } 
+        }
+        else {
+            showInputDataValidationErrorsForRoomType(constraintViolations);
         }
     }
 
@@ -265,11 +280,19 @@ public class HotelOperationModule {
             roomType.setAmenities(amenities);
         }
 
-        try {
-            roomTypeSessionBeanRemote.updateRoomType(roomType);
-            System.out.println("Room type updated successfully!\n");
-        } catch (RoomTypeNotFoundException | UpdateRoomTypeException ex) {
-            System.out.println("An error has occurred while updating room type: " + ex.getMessage() + "\n");
+        Set<ConstraintViolation<RoomType>> constraintViolations = validator.validate(roomType);
+
+        if (constraintViolations.isEmpty()) {
+            try {
+                roomTypeSessionBeanRemote.updateRoomType(roomType);
+                System.out.println("Room type updated successfully!\n");
+            } catch (RoomTypeNotFoundException | UpdateRoomTypeException ex) {
+                System.out.println("An error has occurred while updating room type: " + ex.getMessage() + "\n");
+            } catch (InputDataValidationException ex) {
+                System.out.println(ex.getMessage() + "\n");
+            }
+        } else {
+            showInputDataValidationErrorsForRoomType(constraintViolations);
         }
 
     }
@@ -316,12 +339,20 @@ public class HotelOperationModule {
         if (response > 0 && response <= roomTypes.size()) {
 
             Room newRoom = new Room(roomNum);
-//           
-            try {
-                Long newRoomId = roomSessionBeanRemote.createNewRoom(newRoom, response);
-                System.out.print("New Room " + newRoomId + " successfully created");
-            } catch (RoomNumberExistException | UnknownPersistenceException ex) {
-                System.out.print("error");
+          
+            Set<ConstraintViolation<Room>> constraintViolations = validator.validate(newRoom);
+
+            if (constraintViolations.isEmpty()) {
+                try {
+                    Long newRoomId = roomSessionBeanRemote.createNewRoom(newRoom, response);
+                    System.out.print("New Room " + newRoomId + " successfully created");
+                } catch (RoomNumberExistException | UnknownPersistenceException ex) {
+                    System.out.print("error");
+                } catch (InputDataValidationException ex) {
+                    System.out.println(ex.getMessage() + "\n");
+                }
+            } else {
+                showInputDataValidationErrorsForRoom(constraintViolations);
             }
 
         } else {
@@ -409,17 +440,26 @@ public class HotelOperationModule {
             }
         }
 
-        try {
-            if (roomTypeId.toString().length() > 0) {
-                RoomType roomType = roomTypeSessionBeanRemote.retrieveRoomTypeByRoomTypeId(roomTypeId);
-                room.setRoomType(roomType);
+        Set<ConstraintViolation<Room>> constraintViolations = validator.validate(room);
+
+        if (constraintViolations.isEmpty()) {
+            try {
+                if (roomTypeId.toString().length() > 0) {
+                    RoomType roomType = roomTypeSessionBeanRemote.retrieveRoomTypeByRoomTypeId(roomTypeId);
+                    room.setRoomType(roomType);
+                }
+
+                roomSessionBeanRemote.updateRoom(room);
+                System.out.println("Room updated successfully!\n");
+            } catch (RoomNotFoundException ex) {
+                System.out.println("An error has occurred while updating room: " + ex.getMessage() + "\n");
+            } catch (RoomTypeNotFoundException ex) {
+                System.out.println("An error occurred while updating room: " + ex.getMessage() + "\n");
+            } catch (InputDataValidationException ex) {
+                System.out.println(ex.getMessage() + "\n");
             }
-            roomSessionBeanRemote.updateRoom(room);
-            System.out.println("Room updated successfully!\n");
-        } catch (RoomNotFoundException ex) {
-            System.out.println("An error has occurred while updating room: " + ex.getMessage() + "\n");
-        } catch (RoomTypeNotFoundException ex) {
-            System.out.println("An error occurred while updating room: " + ex.getMessage() + "\n");
+        } else {
+            showInputDataValidationErrorsForRoom(constraintViolations);
         }
     }
 
@@ -477,39 +517,49 @@ public class HotelOperationModule {
         scanner.nextLine();
 
         RoomRate newRoomRate = new RoomRate(name, rateType, ratePerNight);
+        
+        Set<ConstraintViolation<RoomRate>> constraintViolations = validator.validate(newRoomRate);
 
-        if (rateType.equals(RateType.PEAK) || rateType.equals(RateType.PROMOTION)) {
+        if (constraintViolations.isEmpty()) {
+            
+        
+            if (rateType.equals(RateType.PEAK) || rateType.equals(RateType.PROMOTION)) {
 
-            try {
-                System.out.print("Enter start date (DD/MM/YYYY) of room rate (press enter if no validity period) > ");
-                Date startDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
+                try {
+                    System.out.print("Enter start date (DD/MM/YYYY) of room rate (press enter if no validity period) > ");
+                    Date startDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
 
-                System.out.print("Enter end date (DD/MM/YYYY) of room rate (press enter if no validity period) > ");
-                Date endDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
-                newRoomRate.setStartDate(startDate);
-                newRoomRate.setEndDate(endDate);
-            } catch (ParseException ex) {
-                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.print("Enter end date (DD/MM/YYYY) of room rate (press enter if no validity period) > ");
+                    Date endDate = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
+                    newRoomRate.setStartDate(startDate);
+                    newRoomRate.setEndDate(endDate);
+                } catch (ParseException ex) {
+                    Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
 
-        }
+            System.out.println("Select Room Type");
+            List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
+            for (RoomType rt : roomTypes) {
+                System.out.println("Room type id: " + rt.getId() + ". " + rt.getName());
+            }
 
-        System.out.println("Select Room Type");
-        List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
-        for (RoomType rt : roomTypes) {
-            System.out.println("Room type id: " + rt.getId() + ". " + rt.getName());
-        }
+            System.out.print(">");
+            Long roomTypeId = scanner.nextLong();
 
-        System.out.print(">");
-        Long roomTypeId = scanner.nextLong();
-
-        try {
-            Long newRoomRateId = roomRateSessionBeanRemote.createNewRoomRate(newRoomRate, roomTypeId);
-            System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
-        } catch (RoomRateNameExistsException ex) {
-            System.out.println("An error has occurred while creating the new room rate!: The room rate name already exist\n");
-        } catch (UnknownPersistenceException ex) {
-            System.out.println("An unknown error has occurred while creating the new room rate!: " + ex.getMessage() + "\n");
+            try {
+                Long newRoomRateId = roomRateSessionBeanRemote.createNewRoomRate(newRoomRate, roomTypeId);
+                System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
+            } catch (RoomRateNameExistsException ex) {
+                System.out.println("An error has occurred while creating the new room rate!: The room rate name already exist\n");
+            } catch (UnknownPersistenceException ex) {
+                System.out.println("An unknown error has occurred while creating the new room rate!: " + ex.getMessage() + "\n");
+            } catch (InputDataValidationException ex) {
+                System.out.println(ex.getMessage() + "\n");
+            }
+        } else {
+            showInputDataValidationErrorsForRoomRate(constraintViolations);
         }
     }
 
@@ -589,11 +639,20 @@ public class HotelOperationModule {
             }
         }
 
-        try {
-            roomRateSessionBeanRemote.updateRoomRate(roomRate);
-            System.out.println("Room rate updated successfully!\n");
-        } catch (RoomRateNotFoundException ex) {
-            System.out.println("An error has occurred while updating room rate: " + ex.getMessage() + "\n");
+        Set<ConstraintViolation<RoomRate>> constraintViolations = validator.validate(roomRate);
+
+        if (constraintViolations.isEmpty()) {
+            
+            try {
+                roomRateSessionBeanRemote.updateRoomRate(roomRate);
+                System.out.println("Room rate updated successfully!\n");
+            } catch (RoomRateNotFoundException ex) {
+                System.out.println("An error has occurred while updating room rate: " + ex.getMessage() + "\n");
+            } catch (InputDataValidationException ex) {
+                System.out.println(ex.getMessage() + "\n");
+            }
+        } else {
+            showInputDataValidationErrorsForRoomRate(constraintViolations);
         }
     }
 
@@ -657,5 +716,35 @@ public class HotelOperationModule {
             System.out.println("Invalid date!");
             return;
         }
+    }
+    
+    private void showInputDataValidationErrorsForRoomType(Set<ConstraintViolation<RoomType>> constraintViolations) {
+        System.out.println("\nInput data validation error!:");
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            System.out.println("\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage());
+        }
+
+        System.out.println("\nPlease try again......\n");
+    }
+     
+    private void showInputDataValidationErrorsForRoom(Set<ConstraintViolation<Room>> constraintViolations) {
+        System.out.println("\nInput data validation error!:");
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            System.out.println("\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage());
+        }
+
+        System.out.println("\nPlease try again......\n");
+    }
+     
+    private void showInputDataValidationErrorsForRoomRate(Set<ConstraintViolation<RoomRate>> constraintViolations) {
+        System.out.println("\nInput data validation error!:");
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            System.out.println("\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage());
+        }
+
+        System.out.println("\nPlease try again......\n");
     }
 }
