@@ -188,8 +188,8 @@ public class HotelOperationModule {
 
         if (constraintViolations.isEmpty()) {
             try {
-                Long newRoomRateId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType, nextHigher);
-                System.out.println("New room rate created successfully!: " + newRoomRateId + "\n");
+                Long newRoomTypeId = roomTypeSessionBeanRemote.createNewRoomType(newRoomType, nextHigher);
+                System.out.println("New room type created successfully!: " + newRoomTypeId + "\n");
 
             } catch (RoomTypeNameExistsException ex) {
                 System.out.println("An error has occurred while creating the new room type!: The room type name already exist\n");
@@ -206,7 +206,7 @@ public class HotelOperationModule {
 
     private void doViewRoomTypeDetails() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View Room Type Details ***\n");
+        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View All Room Types ***\n");
         System.out.println("Enter ID of Room Type to view");
         List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
 
@@ -214,7 +214,7 @@ public class HotelOperationModule {
             System.out.println("Room Id: " + rt.getId() + ". " + rt.getName());
         }
 
-        System.out.print(">");
+        System.out.print("Select a room type to view >");
 
         try {
             Long roomTypeId = scanner.nextLong();
@@ -485,7 +485,7 @@ public class HotelOperationModule {
 
     public void doViewAllRooms() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View All Room ***\n");
+        System.out.println("*** Hotel Reservation System :: Hotel Operation :: Sales Manager :: View All Rooms ***\n");
 
         List<Room> rooms = roomSessionBeanRemote.viewAllRooms();
 
