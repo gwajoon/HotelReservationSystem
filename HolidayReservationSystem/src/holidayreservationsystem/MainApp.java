@@ -230,8 +230,11 @@ public class MainApp {
                     }
                     int selection = scanner.nextInt();
 
-                    if (currentPartner.getId() != null) {
+                    if (selection > 0 && selection <= availableRoomTypes.size() && currentPartner.getId() != null) {
                         doReserveHotelRoom(availableRoomTypes.get(selection - 1).getId(), checkInDate, checkOutDate, numOfRooms, currentPartner.getId());
+                    }
+                     else {
+                    System.out.println("Invalid Selection");
                     }
                 }
             }
